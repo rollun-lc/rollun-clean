@@ -1,0 +1,19 @@
+{
+    "name": "rollun/clean",
+    "description": "Clean base classes",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yurii Orlyk",
+            "email": "orlyk.rollun@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Clean\\Common\\": "src"
+        }
+    }
+}
