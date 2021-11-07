@@ -19,6 +19,11 @@ class EntityDto
      */
     public $items;
 
+    /**
+     * @var \Clean\Common\Utils\Extensions\DateTime
+     */
+    public $date;
+
     public function __construct($id)
     {
         $this->id = $id;
