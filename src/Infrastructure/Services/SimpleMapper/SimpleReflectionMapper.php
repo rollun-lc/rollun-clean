@@ -6,6 +6,9 @@ use Clean\Common\Application\Interfaces\DtoMapperInterface;
 use Clean\Common\Application\Interfaces\EntityMapperInterface;
 use PHPUnit\Framework\Constraint\TraversableContains;
 
+/**
+ * @todo
+ */
 class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterface
 {
     protected const BUILTIN_TYPES = [
@@ -16,9 +19,9 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
         'null' => 'null',
     ];
 
-    protected const DIRECTION_FROM_ENTITY_TO_DTO = 'fromEntityToDto';
+    protected const DIRECTION_TO_DTO = 'fromEntityToDto';
 
-    protected const DIRECTION_FROM_DTO_TO_ENTITY = 'fromDtoToEntity';
+    protected const DIRECTION_TO_ENTITY = 'fromDtoToEntity';
 
     public function map(object $instance, array $data)
     {
@@ -79,7 +82,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
         return $value;
     }
 
-    protected function createInstanceFromAnother(object $object, string $className, string $direction)
+    protected function createInstanceFromAnother($object, string $className, string $direction)
     {
         $reflectionClass = new \ReflectionClass($className);
         $arguments = [];
@@ -116,7 +119,8 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
                 $value = $collection;
                 $value = $items;
             } elseif (class_exists($type)) {
-                $directionMethod = [$this, $direction];
+                // TODO
+                $directionMethod = is_object($value) ? [$this, $direction] : [$this, 'fromArrayToDto'];
                 $value = $directionMethod($value, $type);
             }
         }
@@ -133,7 +137,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
     {
         if (is_string($dto)) {
             $reflectionClass = new \ReflectionClass($dto);
-            $dto = $this->createInstanceFromAnother($entity, $dto, self::DIRECTION_FROM_ENTITY_TO_DTO);
+            $dto = $this->createInstanceFromAnother($entity, $dto, self::DIRECTION_TO_DTO);
         }
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
@@ -143,7 +147,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
 
             $type = $this->getPropertyDocCommentType($dto, $name);
 
-            if (!isset($value) && $type === gettype($entity)) {
+            if (!isset($value) && !$this->isBuiltin($type) && $type === gettype($entity)) {
                 $value = $entity;
             } elseif ($this->isCollection($type)) {
                 // TODO Only array not Collection
@@ -154,7 +158,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
                 }
                 $value = $collection;
             } else {
-                $value = $this->setType($value, $type, self::DIRECTION_FROM_ENTITY_TO_DTO);
+                $value = $this->setType($value, $type, self::DIRECTION_TO_DTO);
             }
 
             $dto->{$name} = $value;
@@ -172,7 +176,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
     {
 
         if (is_string($entity)) {
-            $entity = $this->createInstanceFromAnother($dto, $entity, self::DIRECTION_FROM_DTO_TO_ENTITY);
+            $entity = $this->createInstanceFromAnother($dto, $entity, self::DIRECTION_TO_ENTITY);
         }
 
         $reflectionClass = new \ReflectionClass($dto);
@@ -194,7 +198,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
                 }
                 $value = $collection;
             } else {
-                $value = $this->setType($value, $type, self::DIRECTION_FROM_DTO_TO_ENTITY);
+                $value = $this->setType($value, $type, self::DIRECTION_TO_ENTITY);
             }
 
             $reflectionMethod->invoke($entity, $value);
@@ -264,41 +268,68 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
 
     /**
      * @param array $data
-     * @param object|string $instance
+     * @param object|string $dto
      * @return mixed
      * @todo implementation add test
      */
-    public function fromArrayToObject(array $data, $instance)
+    public function fromArrayToDto(array $data, $dto)
     {
-        /*if (is_string($instance)) {
-            $instance = $this->createInstanceFromAnother($instance);
+        if (is_string($dto)) {
+            $reflectionClass = new \ReflectionClass($dto);
+            $dto = $this->createInstanceFromAnother($data, $dto, self::DIRECTION_TO_DTO);
         }
-        foreach ($data as $key => $value) {
-            $setter = 'set' . $key;
-            if (method_exists($instance, $setter)) {
-                $reflectionMethod = new \ReflectionMethod($instance, $setter);
-                $reflectionParameter = $reflectionMethod->getParameters()[0];
-                $type = $reflectionParameter->getType() ? $reflectionParameter->getType()->getName() : null;
-            } elseif (property_exists($instance, $key)) {
-                $reflectionProperty = new \ReflectionProperty($instance, $key);
-                // TODO
-                $type = null;
-                if ($docComment = $reflectionProperty->getDocComment()) {
-                    if (preg_match_all('/@(\w+)\s+(.*)\r?\n/m', $docComment, $matches)){
-                        $result = array_combine($matches[1], $matches[2]);
-                        if (isset($result['var'])) {
-                            $type = $result['var'];
-                        }
-                    }
+
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $name = $reflectionProperty->getName();
+
+            $value = $this->getParamFromValue($name, $data);
+
+            $type = $this->getPropertyDocCommentType($dto, $name);
+
+            if (!isset($value) && !$this->isBuiltin($type) && $type === gettype($data)) {
+                $value = $data;
+            } elseif ($this->isCollection($type)) {
+                // TODO Only array not Collection
+                $collection = [];
+                $type = $this->getCollectionItemDocCommentType($dto, $name);
+                foreach ($value as $item) {
+                    $collection[] = $this->fromArrayToDto($item, $type);
                 }
+                $value = $collection;
+            } else {
+                $value = $this->setType($value, $type, self::DIRECTION_TO_DTO);
             }
 
-        }*/
+            $dto->{$name} = $value;
+        }
+
+        return $dto;
     }
 
-    public function fromObjectToArray($instance)
+    public function fromDtoToArray($dto)
     {
+        $result = [];
 
+        $reflectionClass = new \ReflectionClass($dto);
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $name = $reflectionProperty->getName();
+
+            $value = $this->getParamFromValue($name, $dto);
+
+            if (is_array($value)) {
+                $collection = [];
+                foreach ($value as $item) {
+                    $collection[] = $this->fromDtoToArray($item);
+                }
+                $value = $collection;
+            } elseif(is_object($value)) {
+                $value = $this->fromDtoToArray($value);
+            }
+
+            $result[$name] = $value;
+        }
+
+        return $result;
     }
 
 }

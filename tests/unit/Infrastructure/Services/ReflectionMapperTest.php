@@ -14,6 +14,42 @@ use unit\Infrastructure\Services\Classes\EntityItemDto;
 
 class ReflectionMapperTest extends TestCase
 {
+    protected $count = 2;
+
+    protected function createTestEntityDto()
+    {
+        for ($i = 1; $i <= $this->count; $i++) {
+            $item = new EntityItemDto($i);
+            $item->name = 'Item ' . $i;
+            $items[] = $item;
+        }
+        $innerDto = new EntityInnerDto(1);
+        $innerDto->title = 'Title 1';
+        $entityDto = new EntityDto(1);
+        $entityDto->items = $items;
+        $entityDto->inner = $innerDto;
+
+        return $entityDto;
+    }
+
+    protected function createTestArrayData()
+    {
+        for ($i = 1; $i <= $this->count; $i++) {
+            $items[] = [
+                'id' => $i,
+                'name' => 'Item ' . $i,
+            ];
+        }
+        return [
+            'id' => 1,
+            'inner' => [
+                'id' => 1,
+                'title' => 'Title 1',
+            ],
+            'items' => $items
+        ];
+    }
+
     public function testTransferToDto()
     {
         $inner = new EntityInner(1);
@@ -41,16 +77,7 @@ class ReflectionMapperTest extends TestCase
 
     public function testTransferFromDto()
     {
-        for ($i = 1; $i < 3; $i++) {
-            $item = new EntityItemDto($i);
-            $item->name = 'Item ' . $i;
-            $items[] = $item;
-        }
-        $innerDto = new EntityInnerDto(1);
-        $innerDto->title = 'Title 1';
-        $entityDto = new EntityDto(1);
-        $entityDto->items = $items;
-        $entityDto->inner = $innerDto;
+        $entityDto = $this->createTestEntityDto();
 
         $mapper = new SimpleReflectionMapper();
 
@@ -60,5 +87,30 @@ class ReflectionMapperTest extends TestCase
         $this->assertCount(2, $entity->getItems());
         $this->assertInstanceOf(EntityInner::class, $entity->getInner());
         $this->assertInstanceOf(EntityItem::class, $entity->getItems()[0]);
+    }
+
+    public function testTransferFromArrayToDto()
+    {
+        $data = $this->createTestArrayData();
+
+        $mapper = new SimpleReflectionMapper();
+
+        $dto = $mapper->fromArrayToDto($data, EntityDto::class);
+
+        $this->assertInstanceOf(EntityDto::class, $dto);
+        $this->assertIsArray($dto->items);
+        $this->assertCount(2, $dto->items);
+        $this->assertInstanceOf(EntityInnerDto::class, $dto->inner);
+    }
+
+    public function testTransferFromDtoToArray()
+    {
+        $entityDto = $this->createTestEntityDto();
+
+        $mapper = new SimpleReflectionMapper();
+
+        $data = $mapper->fromDtoToArray($entityDto);
+
+        $this->assertEquals($this->createTestArrayData(), $data);
     }
 }

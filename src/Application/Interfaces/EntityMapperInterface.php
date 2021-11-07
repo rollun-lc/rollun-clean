@@ -20,14 +20,14 @@ interface EntityMapperInterface
 
     /**
      * @param array $data
-     * @param object|string $instance
+     * @param object|string $dto
      * @return mixed
      */
-    public function fromArrayToObject(array $data, $instance);
+    public function fromArrayToDto(array $data, $dto);
 
     /**
-     * @param object $instance
+     * @param object $dto
      * @return mixed
      */
-    public function fromObjectToArray(object $instance);
+    public function fromDtoToArray(object $dto);
 }
