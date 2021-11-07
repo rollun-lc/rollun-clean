@@ -292,7 +292,7 @@ class SimpleReflectionMapper implements DtoMapperInterface, EntityMapperInterfac
             if (!is_a($value, $type, true)) {
                 if (!isset($value) && !$this->isBuiltin($type) && $type === gettype($data)) {
                     $value = $data;
-                } elseif ($this->isCollection($type)) {
+                } elseif ($value && $this->isCollection($type)) {
                     // TODO Only array not Collection
                     $collection = [];
                     $type = $this->getCollectionItemDocCommentType($dto, $name);
