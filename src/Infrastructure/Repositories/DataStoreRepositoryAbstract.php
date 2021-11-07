@@ -7,9 +7,13 @@ use Clean\Common\Domain\Entities\EntityAbstract;
 
 /**
  * TODO Зависимость от пакета rollun-datastore
+ * @deprecated
  */
 abstract class DataStoreRepositoryAbstract extends RepositoryAbstract
 {
+    /**
+     * @var DataStoresInterface
+     */
     protected $dataStore;
 
     public function __construct(

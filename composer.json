@@ -9,11 +9,27 @@
             "email": "orlyk.rollun@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {},
+    "minimum-stability": "stable",
+    "require": {
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "php": "^7.2",
+        "phpunit/phpunit": "^7.0.1",
+        "rollun-com/rollun-utils": "^5.1.1"
+    },
+    "suggest": {
+        "rollun-com/rollun-datastore": "^7.0.0",
+        "articus/data-transfer": "^0.5.1"
+    },
     "autoload": {
         "psr-4": {
             "Clean\\Common\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "unit\\": "tests/unit"
         }
     }
 }

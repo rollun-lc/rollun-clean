@@ -2,8 +2,8 @@
 
 namespace Clean\Common\Frameworks;
 
-use Clean\Common\Application\Interfaces\DtoMapperInterface;
-use Clean\Common\Application\Services\DtoMapper;
+use Clean\Common\Application\Interfaces\EntityMapperInterface;
+use Clean\Common\Infrastructure\Services\SimpleMapper\SimpleReflectionMapper;
 use rollun\utils\Factory\AbstractServiceAbstractFactory;
 
 /**
@@ -15,8 +15,8 @@ class ConfigProvider
     {
         return [
             AbstractServiceAbstractFactory::KEY => [
-                DtoMapperInterface::class => [
-                    AbstractServiceAbstractFactory::KEY_CLASS => DtoMapper::class,
+                EntityMapperInterface::class => [
+                    AbstractServiceAbstractFactory::KEY_CLASS => SimpleReflectionMapper::class,
                     AbstractServiceAbstractFactory::KEY_DEPENDENCIES => []
                 ],
             ]

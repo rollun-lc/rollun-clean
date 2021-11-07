@@ -5,9 +5,13 @@ namespace Clean\Common\Utils\Extensions;
 
 
 use Clean\Common\Domain\Interfaces\ArrayableInterface;
+use Clean\Common\Domain\Interfaces\JsonableInterface;
 
-class Collection extends \ArrayIterator implements ArrayableInterface
+class Collection extends \ArrayIterator implements ArrayableInterface, JsonableInterface
 {
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         $results = [];
@@ -15,23 +19,45 @@ class Collection extends \ArrayIterator implements ArrayableInterface
             if ($item instanceof ArrayableInterface) {
                 $results[] = $item->toArray();
             } else {
-                $results[] = $item;
+                // TODO
+                $results[] = (array) $item;
             }
         }
 
         return $results;
     }
 
-    public function toJson(bool $originKeys = false): string
+    /**
+     * @return string
+     */
+    public function toJson(): string
     {
-        // TODO: Implement toJson() method.
+        return json_encode($this->toArray());
     }
 
+    /**
+     * @param string $key
+     * @param callable|null $callback
+     * @return Collection
+     * @todo
+     */
     public function mapWithKey(string $key, callable $callback = null)
     {
         $collection = new self();
         foreach ($this->getArrayCopy() as $item) {
-            $name = \JmesPath\Env::search($key, $item);
+            if (is_object($item)) {
+                $getter = 'get' . $key;
+                if (method_exists($item, $getter)) {
+                    $name = $item->{$getter}();
+                } elseif (property_exists($item, $key)) {
+                    $name = $item->{$key};
+                }
+            } elseif (is_array($item)) {
+                $name = $item[$key];
+            } else {
+                throw new \Exception('Can not mapWithKey collection with element type ' . gettype($item));
+            }
+
             if ($callback) {
                 $item = $callback($item);
             }
@@ -41,6 +67,10 @@ class Collection extends \ArrayIterator implements ArrayableInterface
         return $collection;
     }
 
+    /**
+     * @param callable $callback
+     * @return Collection
+     */
     public function map(callable $callback)
     {
         $collection = new self();
@@ -52,6 +82,10 @@ class Collection extends \ArrayIterator implements ArrayableInterface
         return $collection;
     }
 
+    /**
+     * @param callable $callback
+     * @return Collection
+     */
     public function filter(callable $callback)
     {
         $collection = new self();
@@ -62,6 +96,9 @@ class Collection extends \ArrayIterator implements ArrayableInterface
         return $collection;
     }
 
+    /**
+     * @return mixed
+     */
     public function first()
     {
         $this->rewind();
@@ -71,5 +108,15 @@ class Collection extends \ArrayIterator implements ArrayableInterface
     public function __toString()
     {
         return (string) json_encode($this->toArray());
+    }
+
+    public function merge(Collection $collection)
+    {
+        return new Collection(
+            array_merge(
+                $this->getArrayCopy(),
+                $collection->getArrayCopy()
+            )
+        );
     }
 }
