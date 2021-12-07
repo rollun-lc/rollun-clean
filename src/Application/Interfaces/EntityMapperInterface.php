@@ -30,4 +30,8 @@ interface EntityMapperInterface
      * @return mixed
      */
     public function fromDtoToArray(object $dto);
+
+    /*public function fromEntityToArray(object $entity);
+
+    public function fromArrayToEntity(array $array, $entity);*/
 }

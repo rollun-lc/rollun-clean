@@ -2,7 +2,7 @@
 
 namespace unit\Infrastructure\Services;
 
-use Clean\Common\Infrastructure\Services\SimpleMapper\SimpleReflectionMapper;
+use Clean\Common\Infrastructure\Services\SimpleMapper\SimpleMapper;
 use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Extensions\DateTime;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ use unit\Infrastructure\Services\Classes\EntityInnerDto;
 use unit\Infrastructure\Services\Classes\EntityItem;
 use unit\Infrastructure\Services\Classes\EntityItemDto;
 
-class ReflectionMapperTest extends TestCase
+class SimpleMapperTest extends TestCase
 {
     protected $count = 2;
 
@@ -26,9 +26,13 @@ class ReflectionMapperTest extends TestCase
         }
         $innerDto = new EntityInnerDto(1);
         $innerDto->title = 'Title 1';
+        $innerInnerDto = new EntityInnerDto(1);
+        $innerInnerDto->title = 'Inner title 1';
+        $innerDto->inner = $innerInnerDto;
         $entityDto = new EntityDto(1);
         $entityDto->items = $items;
         $entityDto->inner = $innerDto;
+        $entityDto->date = new DateTime('2021-11-09T00:13:27+00:00');
 
         return $entityDto;
     }
@@ -46,16 +50,24 @@ class ReflectionMapperTest extends TestCase
             'inner' => [
                 'id' => 1,
                 'title' => 'Title 1',
+                'inner' => [
+                    'id' => 1,
+                    'title' => 'Inner title 1',
+                    'inner' => null,
+                ]
             ],
             'items' => $items,
-            'date' => null,
+            'date' => '2021-11-09T00:13:27+00:00',
         ];
     }
 
-    public function testTransferToDto()
+    protected function createTestEntity()
     {
         $inner = new EntityInner(1);
         $inner->setTitle('Title 1');
+        $innerInner = new EntityInner(1);
+        $innerInner->setTitle('Inner title 1');
+        $inner->setInner($innerInner);
         $entity = new Entity(1);
         $entity->setInner($inner);
         $items = new Collection();
@@ -65,9 +77,16 @@ class ReflectionMapperTest extends TestCase
             $items[] = $item;
         }
         $entity->setItems($items);
+        $entity->setDate(new DateTime('2021-11-09T00:13:27+00:00'));
 
+        return $entity;
+    }
 
-        $mapper = new SimpleReflectionMapper();
+    public function testEntityToDto()
+    {
+        $entity = $this->createTestEntity();
+
+        $mapper = new SimpleMapper();
 
         $dto = $mapper->fromEntityToDto($entity, EntityDto::class);
 
@@ -77,13 +96,13 @@ class ReflectionMapperTest extends TestCase
         $this->assertInstanceOf(EntityItemDto::class, $dto->items[0]);
     }
 
-    public function testTransferFromDto()
+    public function testFromDtoToEntity()
     {
-        $entityDto = $this->createTestEntityDto();
+        $dto = $this->createTestEntityDto();
 
-        $mapper = new SimpleReflectionMapper();
+        $mapper = new SimpleMapper();
 
-        $entity = $mapper->fromDtoToEntity($entityDto, Entity::class);
+        $entity = $mapper->fromDtoToEntity($dto, Entity::class);
 
         $this->assertEquals(1, $entity->getId());
         $this->assertCount(2, $entity->getItems());
@@ -91,38 +110,50 @@ class ReflectionMapperTest extends TestCase
         $this->assertInstanceOf(EntityItem::class, $entity->getItems()[0]);
     }
 
-    public function testTransferFromArrayToDto()
-    {
-        $data = $this->createTestArrayData();
-        $mapper = new SimpleReflectionMapper();
-
-        $dto = $mapper->fromArrayToDto($data, EntityDto::class);
-
-        $this->assertInstanceOf(EntityDto::class, $dto);
-        $this->assertIsArray($dto->items);
-        $this->assertCount(2, $dto->items);
-        $this->assertInstanceOf(EntityInnerDto::class, $dto->inner);
-    }
-
     public function testTransferFromDtoToArray()
     {
         $entityDto = $this->createTestEntityDto();
-        $mapper = new SimpleReflectionMapper();
+        $mapper = new SimpleMapper();
 
         $data = $mapper->fromDtoToArray($entityDto);
 
         $this->assertEquals($this->createTestArrayData(), $data);
     }
 
-    public function testTransferWithNoDtoClass()
+    public function testTransferFromArrayToDto()
     {
         $data = $this->createTestArrayData();
-        $data['date'] = new DateTime('2021-01-01 00:00:00');
-        $mapper = new SimpleReflectionMapper();
+        $mapper = new SimpleMapper();
 
         $dto = $mapper->fromArrayToDto($data, EntityDto::class);
 
         $this->assertInstanceOf(EntityDto::class, $dto);
-
+        $this->assertInstanceOf(Collection::class, $dto->items);
+        $this->assertCount(2, $dto->items);
+        $this->assertInstanceOf(EntityInnerDto::class, $dto->inner);
+        $this->assertEquals($data['date'], $dto->date->format('c'));
     }
+
+    public function testTransferWithNoDtoClass()
+    {
+        $data = $this->createTestArrayData();
+        $data['date'] = new DateTime('2021-01-01 00:00:00');
+        $mapper = new SimpleMapper();
+
+        $dto = $mapper->fromArrayToDto($data, EntityDto::class);
+
+        $this->assertInstanceOf(EntityDto::class, $dto);
+        $this->assertInstanceOf(Collection::class, $dto->items);
+        $this->assertCount(2, $dto->items);
+        $this->assertInstanceOf(EntityInnerDto::class, $dto->inner);
+    }
+
+   /* public function testFromEntityToArray()
+    {
+        $entity = $this->createTestEntity();
+
+        $mapper = new SimpleMapper();
+
+        $result = $mapper->fromEntityToArray($entity);
+    }*/
 }

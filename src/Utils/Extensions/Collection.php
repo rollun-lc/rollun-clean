@@ -18,8 +18,9 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
         foreach ($this->getArrayCopy() as $item) {
             if ($item instanceof ArrayableInterface) {
                 $results[] = $item->toArray();
+            } elseif (is_scalar($item)) {
+                $results[] = $item;
             } else {
-                // TODO
                 $results[] = (array) $item;
             }
         }
@@ -35,6 +36,13 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
         return json_encode($this->toArray());
     }
 
+    public function column($column)
+    {
+        return $this->map(function ($item) use ($column) {
+            return $this->getValueFromItem($item, $column);
+        });
+    }
+
     /**
      * @param string $key
      * @param callable|null $callback
@@ -45,19 +53,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
     {
         $collection = new self();
         foreach ($this->getArrayCopy() as $item) {
-            if (is_object($item)) {
-                $getter = 'get' . $key;
-                if (method_exists($item, $getter)) {
-                    $name = $item->{$getter}();
-                } elseif (property_exists($item, $key)) {
-                    $name = $item->{$key};
-                }
-            } elseif (is_array($item)) {
-                $name = $item[$key];
-            } else {
-                throw new \Exception('Can not mapWithKey collection with element type ' . gettype($item));
-            }
-
+            $name = $this->getValueFromItem($item, $key);
             if ($callback) {
                 $item = $callback($item);
             }
@@ -118,5 +114,44 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
                 $collection->getArrayCopy()
             )
         );
+    }
+
+    protected function getValueFromItem($item, $key)
+    {
+        if (is_object($item)) {
+            $getter = 'get' . $key;
+            if (method_exists($item, $getter)) {
+                return $item->{$getter}();
+            }
+
+            if (property_exists($item, $key)) {
+                return $item->{$key};
+            }
+        } elseif (is_array($item)) {
+            return $item[$key];
+        }
+
+        throw new \Exception('Can not get ' . $key . ' value from item type ' . gettype($item));
+    }
+
+    public function groupByColumn($column)
+    {
+        $collection = new self();
+        foreach ($this->getArrayCopy() as $key => $item) {
+            $value = $this->getValueFromItem($item, $column);
+            $group = $collection[$value] ?? null;
+            if (!$group) {
+                $group = new self();
+                $collection[$value] = $group;
+            }
+            $group[] = $item;
+        }
+
+        return $collection;
+    }
+
+    public function unique()
+    {
+        return new self(array_unique($this->getArrayCopy()));
     }
 }

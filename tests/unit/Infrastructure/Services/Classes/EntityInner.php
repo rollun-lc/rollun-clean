@@ -14,9 +14,30 @@ class EntityInner
      */
     protected $title;
 
+    /**
+     * @var EntityInner
+     */
+    protected $inner;
+
     public function __construct(int $id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return EntityInner
+     */
+    public function getInner(): ?EntityInner
+    {
+        return $this->inner;
+    }
+
+    /**
+     * @param EntityInner $inner
+     */
+    public function setInner(?EntityInner $inner): void
+    {
+        $this->inner = $inner;
     }
 
     /**

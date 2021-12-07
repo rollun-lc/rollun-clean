@@ -3,6 +3,7 @@
 namespace unit\Infrastructure\Services\Classes;
 
 use Clean\Common\Utils\Extensions\Collection;
+use Clean\Common\Utils\Extensions\DateTime;
 
 class Entity
 {
@@ -19,12 +20,33 @@ class Entity
     protected $items;
 
     /**
+     * @var DateTime
+     */
+    protected $date;
+
+    /**
      * @param int $id
      * @param array|Collection $items
      */
     public function __construct(int $id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate(): DateTime
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param DateTime $date
+     */
+    public function setDate(DateTime $date): void
+    {
+        $this->date = $date;
     }
 
     public function getId(): int

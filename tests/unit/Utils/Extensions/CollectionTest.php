@@ -115,4 +115,34 @@ class CollectionTest extends TestCase
 
         $this->assertCount(2, $result);
     }
+
+    public function testColumn()
+    {
+        $collection = new Collection([
+            $this->createSimpleInstance(1, ['name' => 'hello']),
+            $this->createSimpleInstance(2, ['name' => 'bla']),
+            $this->createSimpleInstance(3, ['name' => 'hello']),
+        ]);
+
+        $result = $collection->column('name');
+
+        $this->assertContains('hello', $result);;
+        $this->assertContains('bla', $result);
+        $this->assertCount(3, $result);
+    }
+
+    public function testGroupByColumn()
+    {
+        $collection = new Collection([
+            $this->createSimpleInstance(1, ['name' => 'hello']),
+            $this->createSimpleInstance(2, ['name' => 'bla']),
+            $this->createSimpleInstance(3, ['name' => 'hello']),
+        ]);
+
+        $result = $collection->groupByColumn('name');
+
+        $this->assertArrayHasKey('hello', $result);
+        $this->assertCount(2, $result['hello']);
+        $this->assertCount(1, $result['bla']);
+    }
 }
