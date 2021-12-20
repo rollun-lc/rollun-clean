@@ -1,6 +1,6 @@
 {
     "name": "rollun-com/rollun-clean",
-    "description": "Clean base classes",
+    "description": "Base classes for clean architecture",
     "type": "library",
     "license": "MIT",
     "authors": [
