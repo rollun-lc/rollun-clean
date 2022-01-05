@@ -4,6 +4,7 @@ namespace Clean\Common\Infrastructure\Repositories;
 
 use Clean\Common\Application\Interfaces\MapperInterface;
 use Clean\Common\Domain\Entities\EntityAbstract;
+use rollun\datastore\DataStore\Interfaces\DataStoresInterface;
 
 /**
  * TODO Зависимость от пакета rollun-datastore
