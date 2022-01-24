@@ -6,12 +6,12 @@ use Clean\Common\Infrastructure\Services\SimpleMapper\SimpleMapper;
 use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Extensions\DateTime;
 use PHPUnit\Framework\TestCase;
-use unit\Infrastructure\Services\Classes\Entity;
-use unit\Infrastructure\Services\Classes\EntityDto;
-use unit\Infrastructure\Services\Classes\EntityInner;
-use unit\Infrastructure\Services\Classes\EntityInnerDto;
-use unit\Infrastructure\Services\Classes\EntityItem;
-use unit\Infrastructure\Services\Classes\EntityItemDto;
+use unit\Infrastructure\Services\TestClasses\Entity;
+use unit\Infrastructure\Services\TestClasses\EntityDto;
+use unit\Infrastructure\Services\TestClasses\EntityInner;
+use unit\Infrastructure\Services\TestClasses\EntityInnerDto;
+use unit\Infrastructure\Services\TestClasses\EntityItem;
+use unit\Infrastructure\Services\TestClasses\EntityItemDto;
 
 class SimpleMapperTest extends TestCase
 {

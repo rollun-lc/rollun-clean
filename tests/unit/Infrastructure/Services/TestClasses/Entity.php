@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Infrastructure\Services\Classes;
+namespace unit\Infrastructure\Services\TestClasses;
 
 use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Extensions\DateTime;
@@ -15,7 +15,7 @@ class Entity
     protected $inner;
 
     /**
-     * @var \unit\Infrastructure\Services\Classes\EntityItem[]
+     * @var \unit\Infrastructure\Services\TestClasses\EntityItem[]
      */
     protected $items;
 
@@ -68,7 +68,7 @@ class Entity
     }
 
     /**
-     * @param \unit\Infrastructure\Services\Classes\EntityItem[] $items
+     * @param \unit\Infrastructure\Services\TestClasses\EntityItem[] $items
      */
     public function setItems(Collection $items)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Infrastructure\Services\Classes;
+namespace unit\Infrastructure\Services\TestClasses;
 
 class EntityDto
 {
@@ -10,12 +10,12 @@ class EntityDto
     public $id;
 
     /**
-     * @var \unit\Infrastructure\Services\Classes\EntityInnerDto
+     * @var \unit\Infrastructure\Services\TestClasses\EntityInnerDto
      */
     public $inner;
 
     /**
-     * @var \unit\Infrastructure\Services\Classes\EntityItemDto[]
+     * @var \unit\Infrastructure\Services\TestClasses\EntityItemDto[]
      */
     public $items;
 

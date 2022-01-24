@@ -6,6 +6,13 @@ use Clean\Common\Domain\Interfaces\ArrayableInterface;
 
 abstract class EntityAbstract implements ArrayableInterface
 {
+    protected $id;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function toArray(): array
     {
         $fields = $this->getArrayableFields();

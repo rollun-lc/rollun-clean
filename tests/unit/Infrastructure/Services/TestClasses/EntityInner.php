@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Infrastructure\Services\Classes;
+namespace unit\Infrastructure\Services\TestClasses;
 
 class EntityInner
 {

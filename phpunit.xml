@@ -6,11 +6,15 @@
          beStrictAboutCoversAnnotation="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
+         convertErrorsToExceptions="false"
          verbose="true"
          colors="true">
     <testsuites>
         <testsuite name="unit">
             <directory suffix="Test.php">tests/unit</directory>
+        </testsuite>
+        <testsuite name="functional">
+            <directory suffix="Test.php">tests/functional</directory>
         </testsuite>
     </testsuites>
 
