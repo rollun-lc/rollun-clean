@@ -1,6 +1,6 @@
 <?php
 
-namespace functional\Infrastructure\TestClasses;
+namespace test\functional\Infrastructure\TestClasses;
 
 use rollun\datastore\DataStore\DataStoreAbstract;
 use rollun\datastore\DataStore\Interfaces\DataStoreInterface;

@@ -27,7 +27,7 @@ class EnumTest extends TestCase
                 return ['first', 'second'];
             }
         };
-        $this->expectExceptionMessageRegExp('/Invalid value .*?\. Acceptable value .+/');
+        $this->expectExceptionMessageMatches('/Invalid value .*?\. Acceptable value .+/');
         $enum->setValue(null);
     }
 

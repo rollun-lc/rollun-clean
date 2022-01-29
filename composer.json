@@ -9,15 +9,28 @@
             "email": "orlyk.rollun@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
+        "php": "^8.0",
         "ext-json": "*"
     },
     "require-dev": {
-        "php": "^7.2",
-        "phpunit/phpunit": "^7.0.1",
-        "rollun-com/rollun-utils": "^4.0||^5.0",
-        "rollun-com/rollun-datastore": "^7.0.0"
+        "php": "^8.0",
+        "phpunit/phpunit": "^9.5.10",
+        "rollun-com/rollun-callback": "dev-laminas",
+        "rollun-com/rollun-datastore": "dev-laminas-with-xiag",
+        "rollun-com/rollun-logger": "dev-laminas",
+        "rollun-com/rollun-utils": "dev-laminas",
+        "laminas/laminas-component-installer": "^2.6",
+        "laminas/laminas-config-aggregator": "^1.7",
+        "laminas/laminas-diactoros": "^2.8",
+        "laminas/laminas-servicemanager": "^3.10",
+        "laminas/laminas-stdlib": "^3.7.0",
+        "mezzio/mezzio": "^3.9",
+        "mezzio/mezzio-fastroute": "^3.4",
+        "mezzio/mezzio-helpers": "^5.8",
+        "mezzio/mezzio-session": "1.7.x-dev",
+        "symfony/dotenv": "6.1.x-dev"
     },
     "suggest": {
         "rollun-com/rollun-datastore": "^7.0.0",
@@ -25,13 +38,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Clean\\Common\\": "src"
+            "Clean\\Common\\": "src",
+            "example\\": "example/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "unit\\": "tests/unit",
-            "functional\\": "tests/functional"
+            "test\\": "test",
+            "example\\": "example"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "zendframework/zend-component-installer": true,
+            "rollun-com/rollun-installer": true,
+            "laminas/laminas-component-installer": true
         }
     }
 }

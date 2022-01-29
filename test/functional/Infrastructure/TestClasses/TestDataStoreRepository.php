@@ -1,6 +1,6 @@
 <?php
 
-namespace functional\Infrastructure\TestClasses;
+namespace test\functional\Infrastructure\TestClasses;
 
 use Clean\Common\Infrastructure\Repositories\DataStoreRepositoryAbstract;
 use rollun\datastore\DataStore\Memory;

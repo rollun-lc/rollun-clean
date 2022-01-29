@@ -1,17 +1,17 @@
 <?php
 
-namespace unit\Infrastructure\Services;
+namespace test\unit\Infrastructure\Services;
 
 use Clean\Common\Infrastructure\Services\SimpleMapper\SimpleMapper;
 use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Extensions\DateTime;
 use PHPUnit\Framework\TestCase;
-use unit\Infrastructure\Services\TestClasses\Entity;
-use unit\Infrastructure\Services\TestClasses\EntityDto;
-use unit\Infrastructure\Services\TestClasses\EntityInner;
-use unit\Infrastructure\Services\TestClasses\EntityInnerDto;
-use unit\Infrastructure\Services\TestClasses\EntityItem;
-use unit\Infrastructure\Services\TestClasses\EntityItemDto;
+use test\unit\Infrastructure\Services\TestClasses\Entity;
+use test\unit\Infrastructure\Services\TestClasses\EntityDto;
+use test\unit\Infrastructure\Services\TestClasses\EntityInner;
+use test\unit\Infrastructure\Services\TestClasses\EntityInnerDto;
+use test\unit\Infrastructure\Services\TestClasses\EntityItem;
+use test\unit\Infrastructure\Services\TestClasses\EntityItemDto;
 
 class SimpleMapperTest extends TestCase
 {

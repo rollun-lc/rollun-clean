@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Infrastructure\Services\TestClasses;
+namespace test\unit\Infrastructure\Services\TestClasses;
 
 class EntityInnerDto
 {
@@ -9,7 +9,7 @@ class EntityInnerDto
     public $title;
 
     /**
-     * @var \unit\Infrastructure\Services\TestClasses\EntityInnerDto
+     * @var \test\unit\Infrastructure\Services\TestClasses\EntityInnerDto
      */
     public $inner;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace functional\Infrastructure\Repositories;
+namespace test\functional\Infrastructure\Repositories;
 
-use functional\Infrastructure\TestClasses\DataStoreAdapter;
-use functional\Infrastructure\TestClasses\Test;
-use functional\Infrastructure\TestClasses\TestDataStoreRepository;
-use functional\Infrastructure\TestClasses\TestRepository;
+use test\functional\Infrastructure\TestClasses\DataStoreAdapter;
+use test\functional\Infrastructure\TestClasses\Test;
+use test\functional\Infrastructure\TestClasses\TestDataStoreRepository;
+use test\functional\Infrastructure\TestClasses\TestRepository;
 use PHPUnit\Framework\TestCase;
 use rollun\datastore\DataStore\Memory;
 
@@ -39,5 +39,6 @@ class RepositoryAbstractTest extends TestCase
         $entity->setName('Hello world');
 
         //$this->assertEquals('Test 1', $entity->getName());
+        $this->assertTrue(true);
     }
 }

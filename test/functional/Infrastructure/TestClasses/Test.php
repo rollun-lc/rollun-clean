@@ -1,6 +1,6 @@
 <?php
 
-namespace functional\Infrastructure\TestClasses;
+namespace test\functional\Infrastructure\TestClasses;
 
 use Clean\Common\Domain\Entities\EntityAbstract;
 
