@@ -11,11 +11,11 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^8.0",
+        "php": ">=8.0",
         "ext-json": "*"
     },
     "require-dev": {
-        "php": "^8.0",
+        "php": ">=8.0",
         "phpunit/phpunit": "^9.5.10",
         "rollun-com/rollun-callback": "dev-laminas",
         "rollun-com/rollun-datastore": "dev-laminas-with-xiag",
