@@ -14,6 +14,13 @@ abstract class Enum
      */
     protected $nullable = false;
 
+    public function __construct($value = null)
+    {
+        if ($value) {
+            $this->setValue($value);
+        }
+    }
+
     /**
      * @param $value
      * @return void
