@@ -49,4 +49,29 @@ abstract class TypedCollection extends Collection
         $this->checkType($value);
         parent::append($value);
     }
+
+    public function map(callable $callback, $static = true)
+    {
+        return $this->newCollection(
+            $static,
+            parent::map($callback)->getArrayCopy()
+        );
+    }
+
+    public function mapWithKey(string $key, callable $callback = null, $static = true)
+    {
+        return $this->newCollection(
+            $static,
+            parent::mapWithKey($key, $callback)->getArrayCopy(),
+        );
+    }
+
+    protected function newCollection($values, $static = true)
+    {
+        if ($static) {
+            return new static($values);
+        }
+
+        return new parent($values);
+    }
 }
