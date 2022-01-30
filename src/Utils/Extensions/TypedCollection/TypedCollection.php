@@ -50,28 +50,41 @@ abstract class TypedCollection extends Collection
         parent::append($value);
     }
 
-    public function map(callable $callback, $static = true)
+    public function map(callable $callback, $class = null)
     {
-        return $this->newCollection(
-            parent::map($callback)->getArrayCopy(),
-            $static
-        );
-    }
-
-    public function mapWithKey(string $key, callable $callback = null, $static = true)
-    {
-        return $this->newCollection(
-            parent::mapWithKey($key, $callback)->getArrayCopy(),
-            $static
-        );
-    }
-
-    protected function newCollection($values, $static = true)
-    {
-        if ($static) {
-            return new static($values);
+        $collection = $this->newCollection($class);
+        foreach ($this->getArrayCopy() as $key => $item) {
+            $item = $callback($item);
+            $collection[$key] = $item;
         }
 
-        return new parent($values);
+        return $collection;
+    }
+
+    public function mapWithKey(string $key, callable $callback = null, $class = null)
+    {
+        $collection = $this->newCollection($class);
+        foreach ($this->getArrayCopy() as $item) {
+            $name = $this->getValueFromItem($item, $key);
+            if ($callback) {
+                $item = $callback($item);
+            }
+            $collection[$name] = $item;
+        }
+
+        return $collection;
+    }
+
+    protected function newCollection($class = null)
+    {
+        if (!$class) {
+            $class = static::class;
+        }
+
+        if (!is_a($class, Collection::class, true)) {
+            throw new \Exception('Class must extend ' . Collection::class);
+        }
+
+        return new $class();
     }
 }
