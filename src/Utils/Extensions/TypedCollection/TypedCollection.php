@@ -53,16 +53,16 @@ abstract class TypedCollection extends Collection
     public function map(callable $callback, $static = true)
     {
         return $this->newCollection(
-            $static,
-            parent::map($callback)->getArrayCopy()
+            parent::map($callback)->getArrayCopy(),
+            $static
         );
     }
 
     public function mapWithKey(string $key, callable $callback = null, $static = true)
     {
         return $this->newCollection(
-            $static,
             parent::mapWithKey($key, $callback)->getArrayCopy(),
+            $static
         );
     }
 
