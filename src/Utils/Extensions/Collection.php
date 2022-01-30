@@ -51,7 +51,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
      */
     public function mapWithKey(string $key, callable $callback = null)
     {
-        $collection = new self();
+        $collection = $this->newCollection();
         foreach ($this->getArrayCopy() as $item) {
             $name = $this->getValueFromItem($item, $key);
             if ($callback) {
@@ -69,7 +69,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
      */
     public function map(callable $callback)
     {
-        $collection = new self();
+        $collection = $this->newCollection();
         foreach ($this->getArrayCopy() as $key => $item) {
             $item = $callback($item);
             $collection[$key] = $item;
@@ -84,7 +84,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
      */
     public function filter(callable $callback)
     {
-        $collection = new self();
+        $collection = $this->newCollection();
         foreach (array_filter($this->getArrayCopy(), $callback) as $key => $item) {
             $collection[$key] = $item;
         }
@@ -136,7 +136,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
 
     public function groupByColumn($column)
     {
-        $collection = new self();
+        $collection = $this->newCollection();
         foreach ($this->getArrayCopy() as $key => $item) {
             $value = $this->getValueFromItem($item, $column);
             $group = $collection[$value] ?? null;
@@ -153,5 +153,10 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
     public function unique()
     {
         return new self(array_unique($this->getArrayCopy()));
+    }
+
+    protected function newCollection()
+    {
+        return new static();
     }
 }
