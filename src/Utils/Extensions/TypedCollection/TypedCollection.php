@@ -54,7 +54,7 @@ abstract class TypedCollection extends Collection
     {
         return $this->map(function ($item) use ($column) {
             return $this->getValueFromItem($item, $column);
-        }, $class ?? self::class);
+        }, $class ?? parent::class);
     }
 
     public function map(callable $callback, $class = null)
