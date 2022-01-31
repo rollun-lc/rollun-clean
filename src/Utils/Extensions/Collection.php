@@ -55,7 +55,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
         foreach ($this->getArrayCopy() as $item) {
             $name = $this->getValueFromItem($item, $key);
             if ($callback) {
-                $item = $callback($item);
+                $item = $callback($item, $key);
             }
             $collection[$name] = $item;
         }
@@ -71,7 +71,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
     {
         $collection = new static();
         foreach ($this->getArrayCopy() as $key => $item) {
-            $item = $callback($item);
+            $item = $callback($item, $key);
             $collection[$key] = $item;
         }
 
@@ -85,7 +85,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
     public function filter(callable $callback)
     {
         $collection = new static();
-        foreach (array_filter($this->getArrayCopy(), $callback) as $key => $item) {
+        foreach (array_filter($this->getArrayCopy(), $callback, ARRAY_FILTER_USE_BOTH) as $key => $item) {
             $collection[$key] = $item;
         }
 
