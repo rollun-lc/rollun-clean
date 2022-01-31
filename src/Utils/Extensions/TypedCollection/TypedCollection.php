@@ -50,6 +50,13 @@ abstract class TypedCollection extends Collection
         parent::append($value);
     }
 
+    public function column($column, $class = null)
+    {
+        return $this->map(function ($item) use ($column) {
+            return $this->getValueFromItem($item, $column);
+        }, $class ?? self::class);
+    }
+
     public function map(callable $callback, $class = null)
     {
         $collection = $this->newCollection($class);
