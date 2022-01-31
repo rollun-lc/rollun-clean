@@ -61,7 +61,7 @@ abstract class TypedCollection extends Collection
     {
         $collection = $this->newCollection($class);
         foreach ($this->getArrayCopy() as $key => $item) {
-            $item = $callback($item);
+            $item = $callback($item, $key);
             $collection[$key] = $item;
         }
 
@@ -74,7 +74,7 @@ abstract class TypedCollection extends Collection
         foreach ($this->getArrayCopy() as $item) {
             $name = $this->getValueFromItem($item, $key);
             if ($callback) {
-                $item = $callback($item);
+                $item = $callback($item, $key);
             }
             $collection[$name] = $item;
         }
