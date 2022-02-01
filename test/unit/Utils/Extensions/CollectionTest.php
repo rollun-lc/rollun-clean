@@ -145,4 +145,20 @@ class CollectionTest extends TestCase
         $this->assertCount(2, $result['hello']);
         $this->assertCount(1, $result['bla']);
     }
+
+    public function testEach()
+    {
+        $items = [
+            $this->createSimpleInstance(1, ['name' => 'hello']),
+            $this->createSimpleInstance(2, ['name' => 'bla']),
+            $this->createSimpleInstance(3, ['name' => 'hello']),
+        ];
+        $collection = new Collection($items);
+        $results = [];
+        $collection->each(function (\stdClass $item, $key) use (&$results) {
+            $results[$key] = $item;
+        });
+
+        $this->assertEquals($items, $results);
+    }
 }

@@ -25,12 +25,12 @@ abstract class RepositoryAbstract implements RepositoryInterface, FromArrayInter
      */
     protected function createEntities($items)
     {
-        $models = [];
+        $models = new Collection();
         foreach ($items as $item) {
             $models[] = $this->createEntity($item);
         }
 
-        return new Collection($models);
+        return $models;
     }
 
     protected function createEntity($data)

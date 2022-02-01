@@ -2,7 +2,7 @@
 
 namespace Clean\Common\Utils\Extensions\Enum;
 
-abstract class Enum
+abstract class Enum implements \Stringable
 {
     /**
      * @var mixed
@@ -48,9 +48,9 @@ abstract class Enum
         return $this->value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return (string) $this->value;
+        return (string) $this->getValue();
     }
 
     abstract protected function getAcceptableValues(): array;

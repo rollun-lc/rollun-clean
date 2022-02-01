@@ -154,4 +154,11 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
     {
         return new static(array_unique($this->getArrayCopy()));
     }
+
+    public function each(callable $callback)
+    {
+        foreach ($this as $key => $value) {
+            $callback($value, $key);
+        }
+    }
 }
