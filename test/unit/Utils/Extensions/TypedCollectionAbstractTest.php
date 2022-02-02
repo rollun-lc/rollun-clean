@@ -150,6 +150,27 @@ class TypedCollectionAbstractTest extends TestCase
         $this->assertInstanceOf(get_class($newCollection), $result);
     }
 
+    public function testMerge()
+    {
+        $collection = new class() extends TypedCollectionAbstract {
+            protected function getType()
+            {
+                return \stdClass::class;
+            }
+        };
+
+        $newCollection = new class($this->getObjects()) extends TypedCollectionAbstract {
+            protected function getType()
+            {
+                return \stdClass::class;
+            }
+        };
+
+        $merged = $collection->merge($newCollection);
+
+        $this->assertInstanceOf(TypedCollectionAbstract::class, $merged);
+    }
+
     protected function getObjects()
     {
         $results = [];

@@ -3,6 +3,7 @@
 namespace Clean\Common\Utils\Extensions\TypedCollection;
 
 use Clean\Common\Utils\Extensions\Collection;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 
 abstract class TypedCollectionAbstract extends Collection
 {
@@ -19,6 +20,12 @@ abstract class TypedCollectionAbstract extends Collection
     public const TYPE_ARRAY = 'array';
 
     public const TYPE_BOOLEAN = 'boolean';
+
+    public function __construct(object|array $array = [], int $flags = 0)
+    {
+        array_walk($array, [$this, 'checkType']);
+        parent::__construct($array, $flags);
+    }
 
     abstract protected function getType();
 
@@ -105,11 +112,6 @@ abstract class TypedCollectionAbstract extends Collection
     public function mapWithKey(string $key, callable $callback = null, $class = null)
     {
         return $this->mapWithKeyTo($class, $key, $callback);
-    }
-
-    public static function newCollection($values = []): Collection
-    {
-        return new Collection($values);
     }
 
     protected function makeCollection($collection = null): Collection
