@@ -16,4 +16,10 @@ class SimpleTypedCollection extends TypedCollection
     {
         return $this->type;
     }
+
+    public function map(callable $callback, $collection = null, $type = null)
+    {
+
+        return parent::map($callback, $collection);
+    }
 }

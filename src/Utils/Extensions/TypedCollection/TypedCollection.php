@@ -50,16 +50,16 @@ abstract class TypedCollection extends Collection
         parent::append($value);
     }
 
-    public function column($column, $class = null)
+    public function column($column, $collection = null)
     {
         return $this->map(function ($item) use ($column) {
             return $this->getValueFromItem($item, $column);
-        }, $class ?? parent::class);
+        }, $collection ?? parent::class);
     }
 
-    public function map(callable $callback, $class = null)
+    public function map(callable $callback, $collection = null)
     {
-        $collection = $this->newCollection($class);
+        $collection = $this->newCollection($collection);
         foreach ($this->getArrayCopy() as $key => $item) {
             $item = $callback($item, $key);
             $collection[$key] = $item;
@@ -68,9 +68,9 @@ abstract class TypedCollection extends Collection
         return $collection;
     }
 
-    public function mapWithKey(string $key, callable $callback = null, $class = null)
+    public function mapWithKey(string $key, callable $callback = null, $collection = null)
     {
-        $collection = $this->newCollection($class);
+        $collection = $this->newCollection($collection);
         foreach ($this->getArrayCopy() as $item) {
             $name = $this->getValueFromItem($item, $key);
             if ($callback) {
@@ -82,16 +82,20 @@ abstract class TypedCollection extends Collection
         return $collection;
     }
 
-    protected function newCollection($class = null)
+    protected function newCollection($collection = null)
     {
-        if (!$class) {
-            $class = static::class;
+        if (!$collection) {
+            $collection = static::class;
         }
 
-        if (!is_a($class, Collection::class, true)) {
+        if (is_string($collection)) {
+            $collection = new Collection();
+        }
+
+        if (!is_a($collection, Collection::class, true)) {
             throw new \Exception('Class must extend ' . Collection::class);
         }
 
-        return new $class();
+        return $collection;
     }
 }
