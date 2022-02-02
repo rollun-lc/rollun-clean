@@ -2,21 +2,17 @@
 
 namespace unit\Utils\Extensions;
 
+use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Extensions\DateTime;
-use PHPUnit\Framework\TestCase;
 use Clean\Common\Utils\Extensions\TypedCollection\NotValidTypeException;
 use Clean\Common\Utils\Extensions\TypedCollection\TypedCollection;
+use PHPUnit\Framework\TestCase;
 
 class TypedCollectionTest extends TestCase
 {
     public function testObjectValid()
     {
-        $collection = new class() extends TypedCollection {
-            protected function getType()
-            {
-                return \stdClass::class;
-            }
-        };
+        $collection = new TypedCollection(\stdClass::class);
 
         $collection[] = new \stdClass();
         $collection->append(new \stdClass());
@@ -27,12 +23,7 @@ class TypedCollectionTest extends TestCase
 
     public function testObjectFailed()
     {
-        $collection = new class() extends TypedCollection {
-            protected function getType()
-            {
-                return \stdClass::class;
-            }
-        };
+        $collection = new TypedCollection(\stdClass::class);
 
         $this->expectException(NotValidTypeException::class);
 
@@ -43,12 +34,7 @@ class TypedCollectionTest extends TestCase
 
     public function testScalarValid()
     {
-        $collection = new class() extends TypedCollection {
-            protected function getType()
-            {
-                return TypedCollection::TYPE_INTEGER;
-            }
-        };
+        $collection = new TypedCollection(TypedCollection::TYPE_INTEGER);
 
         $collection[] = 1;
         $collection->append(2);
@@ -59,17 +45,75 @@ class TypedCollectionTest extends TestCase
 
     public function testSalarFailed()
     {
-        $collection = new class() extends TypedCollection {
-            protected function getType()
-            {
-                return TypedCollection::TYPE_INTEGER;
-            }
-        };
+        $collection = new TypedCollection(TypedCollection::TYPE_INTEGER, [1, 2, 3]);
 
         $this->expectException(NotValidTypeException::class);
 
         $collection[] = true;
 
         $this->assertCount(3, $collection);
+    }
+
+    public function testMap()
+    {
+        $collection = new TypedCollection(\stdClass::class, $this->getObjects());
+
+        $result = $collection->map(
+            function ($item) {
+                return $item->id;
+            },
+            TypedCollection::TYPE_INTEGER
+        );
+
+        $this->assertInstanceOf(TypedCollection::class, $result);
+    }
+
+    public function testMapWithKey()
+    {
+        $collection = new TypedCollection(\stdClass::class, $this->getObjects());
+
+        $result = $collection->mapWithKey('id', null, \stdClass::class);
+
+        $this->assertInstanceOf(TypedCollection::class, $result);
+    }
+
+    public function testMapWithoutClass()
+    {
+        $collection = new TypedCollection(\stdClass::class, $this->getObjects());
+
+        $result = $collection->map(
+            function ($item) {
+                return $item->id;
+            }
+        );
+
+        $this->assertInstanceOf(Collection::class, $result);
+    }
+
+    public function testMapWithKeyWithoutClass()
+    {
+        $collection = new TypedCollection(\stdClass::class, $this->getObjects());
+
+        $result = $collection->mapWithKey('id');
+
+        $this->assertInstanceOf(Collection::class, $result);
+    }
+
+    protected function getObjects($class = \stdClass::class)
+    {
+        $results = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $item = new $class();
+            $item->id = $i;
+            $item->name = 'Name ' . $i;
+            $results[] = $item;
+        }
+
+        return $results;
+    }
+
+    public function testTest()
+    {
+        $this->assertTrue(true);
     }
 }

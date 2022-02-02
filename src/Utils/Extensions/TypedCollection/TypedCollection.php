@@ -4,92 +4,63 @@ namespace Clean\Common\Utils\Extensions\TypedCollection;
 
 use Clean\Common\Utils\Extensions\Collection;
 
-abstract class TypedCollection extends Collection
+class TypedCollection extends TypedCollectionAbstract
 {
-    public const TYPE_INTEGER = 'integer';
+    protected $type;
 
-    public const TYPE_DOUBLE = 'double';
-
-    public const TYPE_STRING = 'string';
-
-    public const TYPE_RESOURCE = 'resource';
-
-    public const TYPE_NULL = 'NULL';
-
-    public const TYPE_ARRAY = 'array';
-
-    public const TYPE_BOOLEAN = 'boolean';
-
-    abstract protected function getType();
-
-    protected function isValid($value)
+    public function __construct($type, object|array $array = [], int $flags = 0)
     {
-        if (is_object($value)) {
-            return is_a($value, $this->getType(), true);
-        }
-
-        return gettype($value) === $this->getType();
+        $this->type = $type;
+        array_walk($array, [$this, 'checkType']);
+        parent::__construct($array, $flags);
     }
 
-    protected function checkType($value)
+    protected function getType()
     {
-        if (!$this->isValid($value)) {
-            throw new NotValidTypeException('Not valid type ' . gettype($value) . '. Expected ' . $this->getType());
-        }
+        return $this->type;
     }
 
-    public function offsetSet(mixed $key, mixed $value)
+    /**
+     * @param callable $callback
+     * @param $collection
+     * @return Collection
+     * @see TypedCollectionAbstract::mapTo()
+     * @todo
+     */
+    public function map(callable $callback, $class = null)
     {
-        $this->checkType($value);
-        parent::offsetSet($key, $value);
+        $collection = $class ? new static($class) : new Collection();
+        return $this->mapTo($collection, $callback);
     }
 
-    public function append(mixed $value)
+    /**
+     * @param string $key
+     * @param callable|null $callback
+     * @param $collection
+     * @return Collection
+     * @see TypedCollectionAbstract::mapWithKeyTo()
+     * @todo
+     */
+    public function mapWithKey(string $key, callable $callback = null, $class = null)
     {
-        $this->checkType($value);
-        parent::append($value);
+        $collection = $class ? new static($class) : new Collection();
+        return $this->mapWithKeyTo($collection, $key, $callback);
     }
 
-    public function column($column, $collection = null)
+    /*public function mapTo($class, callable $callback)
     {
-        return $this->map(function ($item) use ($column) {
-            return $this->getValueFromItem($item, $column);
-        }, $collection ?? parent::class);
-    }
+        $collection = new static($class);
+        return parent::map($callback, $collection);
+    }*/
 
-    public function map(callable $callback, $collection = null)
-    {
-        $collection = $this->newCollection($collection);
-        foreach ($this->getArrayCopy() as $key => $item) {
-            $item = $callback($item, $key);
-            $collection[$key] = $item;
-        }
-
-        return $collection;
-    }
-
-    public function mapWithKey(string $key, callable $callback = null, $collection = null)
-    {
-        $collection = $this->newCollection($collection);
-        foreach ($this->getArrayCopy() as $item) {
-            $name = $this->getValueFromItem($item, $key);
-            if ($callback) {
-                $item = $callback($item, $key);
-            }
-            $collection[$name] = $item;
-        }
-
-        return $collection;
-    }
-
-    protected function newCollection($collection = null)
+    /*protected function newCollection($collection = null, $type = null)
     {
         if (!$collection) {
             $collection = static::class;
         }
 
         if (is_string($collection)) {
-            $collection = new Collection();
+            $collection = new $collection($type);
         }
 
         if (!is_a($collection, Collection::class, true)) {
@@ -97,5 +68,5 @@ abstract class TypedCollection extends Collection
         }
 
         return $collection;
-    }
+    }*/
 }
