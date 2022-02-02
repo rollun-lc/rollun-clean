@@ -2,9 +2,7 @@
 
 namespace Clean\Common\Utils\Extensions;
 
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
-
-class ArrayObject extends \ArrayObject
+class ArrayObject extends \ArrayObject implements \JsonSerializable
 {
     public function __call($name, $arguments)
     {
@@ -19,5 +17,10 @@ class ArrayObject extends \ArrayObject
         }
 
         throw new \Exception('Undefined method ' . $name);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
     }
 }

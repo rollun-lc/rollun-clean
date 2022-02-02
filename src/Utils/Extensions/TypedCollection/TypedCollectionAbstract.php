@@ -3,7 +3,6 @@
 namespace Clean\Common\Utils\Extensions\TypedCollection;
 
 use Clean\Common\Utils\Extensions\Collection;
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 
 abstract class TypedCollectionAbstract extends Collection
 {
@@ -92,7 +91,7 @@ abstract class TypedCollectionAbstract extends Collection
     /**
      * @param callable $callback
      * @param $collection
-     * @return Collection
+     * @return Collection|mixed
      * @see TypedCollectionAbstract::mapTo()
      * @todo
      */
@@ -105,7 +104,7 @@ abstract class TypedCollectionAbstract extends Collection
      * @param string $key
      * @param callable|null $callback
      * @param $collection
-     * @return Collection
+     * @return Collection|mixed
      * @see TypedCollectionAbstract::mapWithKeyTo()
      * @todo
      */

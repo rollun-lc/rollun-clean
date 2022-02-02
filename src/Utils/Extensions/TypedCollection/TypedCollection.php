@@ -36,7 +36,7 @@ class TypedCollection extends TypedCollectionAbstract
      * @param string $key
      * @param callable|null $callback
      * @param $collection
-     * @return Collection
+     * @return Collection|mixed
      * @see TypedCollectionAbstract::mapWithKeyTo()
      * @todo
      */
