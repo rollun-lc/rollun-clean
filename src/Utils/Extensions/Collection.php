@@ -108,7 +108,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
 
     public function merge(Collection $collection)
     {
-        return new Collection(
+        return new static(
             array_merge(
                 $this->getArrayCopy(),
                 $collection->getArrayCopy()
