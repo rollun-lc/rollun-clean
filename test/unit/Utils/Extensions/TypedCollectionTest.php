@@ -6,6 +6,7 @@ use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Extensions\DateTime;
 use Clean\Common\Utils\Extensions\TypedCollection\NotValidTypeException;
 use Clean\Common\Utils\Extensions\TypedCollection\TypedCollection;
+use Clean\Common\Utils\Extensions\TypedCollection\TypedCollectionAbstract;
 use PHPUnit\Framework\TestCase;
 
 class TypedCollectionTest extends TestCase
@@ -110,6 +111,17 @@ class TypedCollectionTest extends TestCase
         }
 
         return $results;
+    }
+
+    public function testMerge()
+    {
+        $collection = new TypedCollection(\stdClass::class);
+
+        $newCollection = new TypedCollection(\stdClass::class, $this->getObjects());
+
+        $merged = $collection->merge($newCollection);
+
+        $this->assertInstanceOf(TypedCollectionAbstract::class, $merged);
     }
 
     public function testTest()

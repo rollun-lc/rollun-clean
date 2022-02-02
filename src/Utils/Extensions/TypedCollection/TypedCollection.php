@@ -8,7 +8,7 @@ class TypedCollection extends TypedCollectionAbstract
 {
     protected $type;
 
-    public function __construct($type, object|array $array = [], int $flags = 0)
+    public function __construct(string $type, object|array $array = [], int $flags = 0)
     {
         $this->type = $type;
         parent::__construct($array, $flags);
@@ -44,5 +44,16 @@ class TypedCollection extends TypedCollectionAbstract
     {
         $collection = $class ? new static($class) : new Collection();
         return $this->mapWithKeyTo($collection, $key, $callback);
+    }
+
+    public function merge(Collection $collection)
+    {
+        return new static(
+            $this->getType(),
+            array_merge(
+                $this->getArrayCopy(),
+                $collection->getArrayCopy()
+            )
+        );
     }
 }
