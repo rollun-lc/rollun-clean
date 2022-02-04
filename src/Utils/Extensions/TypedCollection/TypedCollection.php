@@ -56,4 +56,9 @@ class TypedCollection extends TypedCollectionAbstract
             )
         );
     }
+
+    public function newCollection($values = []): self
+    {
+        return new static($this->getType(), $values);
+    }
 }

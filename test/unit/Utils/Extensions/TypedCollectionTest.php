@@ -124,8 +124,14 @@ class TypedCollectionTest extends TestCase
         $this->assertInstanceOf(TypedCollectionAbstract::class, $merged);
     }
 
-    public function testTest()
+    public function testFilter()
     {
-        $this->assertTrue(true);
+        $collection = new TypedCollection(\stdClass::class, $this->getObjects());
+
+        $filtered = $collection->filter(function (\stdClass $item) {
+            return $item->id == 1;
+        });
+
+        $this->assertCount(1, $filtered);
     }
 }
