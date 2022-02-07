@@ -2,7 +2,7 @@
 
 namespace Clean\Common\Utils\Extensions\Enum;
 
-abstract class Enum implements \Stringable
+abstract class Enum implements \Stringable, \JsonSerializable
 {
     /**
      * @var mixed
@@ -51,6 +51,11 @@ abstract class Enum implements \Stringable
     public function __toString(): string
     {
         return (string) $this->getValue();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__toString();
     }
 
     abstract protected function getAcceptableValues(): array;
