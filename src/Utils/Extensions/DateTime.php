@@ -2,7 +2,7 @@
 
 namespace Clean\Common\Utils\Extensions;
 
-class DateTime extends \DateTime
+class DateTime extends \DateTime implements \JsonSerializable
 {
     /**
      * @var string
@@ -18,5 +18,10 @@ class DateTime extends \DateTime
     public function __toString()
     {
         return $this->format($this->format);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__toString();
     }
 }
