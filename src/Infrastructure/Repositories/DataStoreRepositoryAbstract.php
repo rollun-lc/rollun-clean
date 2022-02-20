@@ -25,7 +25,7 @@ abstract class DataStoreRepositoryAbstract extends RepositoryAbstract
         $this->mapper = $mapper;
     }
 
-    public function getById($id): ?EntityAbstract
+    public function getById($id)
     {
         $data = $this->dataStore->read($id);
         if ($data) {
