@@ -101,6 +101,24 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
         return $this->current();
     }
 
+    public function chunk(int $length)
+    {
+        $result = $this->newCollection();
+        foreach (array_chunk($this->getArrayCopy(), $length) as $key => $group) {
+            $collection = $this->newCollection($group);
+            $result[] = $collection;
+        }
+
+        return $result;
+    }
+
+    public function eachChunk(int $length, callable $callback)
+    {
+        foreach ($this->chunk($length) as $key => $group) {
+            $callback($group, $key);
+        }
+    }
+
     public function __toString()
     {
         return (string) json_encode($this->toArray());

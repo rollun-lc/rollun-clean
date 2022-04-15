@@ -161,4 +161,36 @@ class CollectionTest extends TestCase
 
         $this->assertEquals($items, $results);
     }
+
+    public function testChunk()
+    {
+        $items = [
+            $this->createSimpleInstance(1, ['name' => 'name1']),
+            $this->createSimpleInstance(2, ['name' => 'name2']),
+            $this->createSimpleInstance(3, ['name' => 'name3']),
+            $this->createSimpleInstance(4, ['name' => 'name4']),
+        ];
+        $collection = new Collection($items);
+        $result = $collection->chunk(2);
+
+        $this->assertCount(2, $result);
+        $this->assertCount(2, $result[0]);
+    }
+
+    public function testEachChunk()
+    {
+        $items = [
+            $this->createSimpleInstance(1, ['name' => 'name1']),
+            $this->createSimpleInstance(2, ['name' => 'name2']),
+            $this->createSimpleInstance(3, ['name' => 'name3']),
+            $this->createSimpleInstance(4, ['name' => 'name4']),
+        ];
+        $collection = new Collection($items);
+        $results = [];
+        $collection->eachChunk(2, function (Collection $group, $key) use (&$results) {
+            $results = array_merge($results, $group->getArrayCopy());
+        });
+
+        $this->assertEquals($items, $results);
+    }
 }
