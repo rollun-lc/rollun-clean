@@ -24,12 +24,15 @@ class SimpleMapperTest extends TestCase
             $item->name = 'Item ' . $i;
             $items[] = $item;
         }
-        $innerDto = new EntityInnerDto(1);
+        $innerDto = new EntityInnerDto();
+        $innerDto->id = 1;
         $innerDto->title = 'Title 1';
-        $innerInnerDto = new EntityInnerDto(1);
+        $innerInnerDto = new EntityInnerDto();
+        $innerInnerDto->id = 1;
         $innerInnerDto->title = 'Inner title 1';
         $innerDto->inner = $innerInnerDto;
-        $entityDto = new EntityDto(1);
+        $entityDto = new EntityDto();
+        $entityDto->id = 1;
         $entityDto->items = $items;
         $entityDto->inner = $innerDto;
         $entityDto->date = new DateTime('2021-11-09T00:13:27+00:00');

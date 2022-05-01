@@ -171,10 +171,25 @@ class TypedCollectionAbstractTest extends TestCase
         $this->assertInstanceOf(TypedCollectionAbstract::class, $merged);
     }
 
-    protected function getObjects()
+    public function testChunk()
+    {
+        $collection = new class($this->getObjects(8)) extends TypedCollectionAbstract {
+            protected function getType()
+            {
+                return \stdClass::class;
+            }
+        };
+        $result = $collection->chunk(3);
+
+        $this->assertCount(3, $result);
+        $this->assertCount(3, $result[0]);
+        $this->assertCount(2, $result[2]);
+    }
+
+    protected function getObjects($count = 3)
     {
         $results = [];
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= $count; $i++) {
             $item = new \stdClass();
             $item->id = $i;
             $item->name = 'Name ' . $i;

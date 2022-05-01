@@ -113,6 +113,17 @@ abstract class TypedCollectionAbstract extends Collection
         return $this->mapWithKeyTo($class, $key, $callback);
     }
 
+    public function chunk(int $length)
+    {
+        $result = new Collection();
+        foreach (array_chunk($this->getArrayCopy(), $length) as $key => $group) {
+            $collection = $this->newCollection($group);
+            $result[] = $collection;
+        }
+
+        return $result;
+    }
+
     protected function makeCollection($collection = null): Collection
     {
         if (!$collection) {

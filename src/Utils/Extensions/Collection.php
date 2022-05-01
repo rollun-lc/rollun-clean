@@ -168,6 +168,17 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
         return $collection;
     }
 
+    public function diff($another)
+    {
+        if ($another instanceof Collection) {
+            $another->getArrayCopy();
+        }
+
+        $diff = array_diff($this->getArrayCopy(), $another);
+
+        return $this->newCollection($diff);
+    }
+
     public function unique()
     {
         return $this->newCollection(array_unique($this->getArrayCopy()));

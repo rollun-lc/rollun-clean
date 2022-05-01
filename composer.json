@@ -17,10 +17,10 @@
     "require-dev": {
         "php": ">=8.0",
         "phpunit/phpunit": "^9.5.10",
-        "rollun-com/rollun-callback": "dev-laminas",
-        "rollun-com/rollun-datastore": "dev-laminas-with-xiag",
-        "rollun-com/rollun-logger": "dev-laminas",
-        "rollun-com/rollun-utils": "dev-laminas",
+        "rollun-com/rollun-callback": "^7.0.0",
+        "rollun-com/rollun-datastore": "^8.0.1",
+        "rollun-com/rollun-logger": "^7.0.0",
+        "rollun-com/rollun-utils": "^7.0.0",
         "laminas/laminas-component-installer": "^2.6",
         "laminas/laminas-config-aggregator": "^1.7",
         "laminas/laminas-diactoros": "^2.8",
@@ -29,8 +29,9 @@
         "mezzio/mezzio": "^3.9",
         "mezzio/mezzio-fastroute": "^3.4",
         "mezzio/mezzio-helpers": "^5.8",
-        "mezzio/mezzio-session": "1.7.x-dev",
-        "symfony/dotenv": "6.1.x-dev"
+        "symfony/dotenv": "^6.0.3",
+        "articus/data-transfer": "dev-php-attribute-metadata",
+        "rollun-com/rollun-openapi": "dev-laminas"
     },
     "suggest": {
         "rollun-com/rollun-datastore": "^7.0.0",
@@ -54,5 +55,11 @@
             "rollun-com/rollun-installer": true,
             "laminas/laminas-component-installer": true
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/home/yurii/www/rollun/rollun-openapi"
+        }
+    ]
 }

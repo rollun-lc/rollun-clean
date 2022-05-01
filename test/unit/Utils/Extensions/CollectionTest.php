@@ -193,4 +193,26 @@ class CollectionTest extends TestCase
 
         $this->assertEquals($items, $results);
     }
+
+    public function testMemomyUsage()
+    {
+        $memory1 = memory_get_usage();
+
+        $collection = new Collection();
+        for ($i = 1; $i < 5000; $i++) {
+            $collection[] = $this->createSimpleInstance($i, ['name' => 'name' . $i]);
+        }
+        $memory2 = memory_get_usage();
+        $collectionMemory = $memory2 - $memory1;
+
+        $another = $collection->map(function ($item) {
+            $item->name = 'name ' . ($item->id + 1);
+            return $item;
+        });
+
+        $memory3 = memory_get_usage();
+        $mapMemory = $memory3 - $memory2;
+
+       $this->assertLessThan($collectionMemory / 10, $mapMemory);
+    }
 }
