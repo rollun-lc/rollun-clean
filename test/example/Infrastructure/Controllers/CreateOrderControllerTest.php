@@ -1,11 +1,11 @@
 <?php
 
-namespace test\functional;
+namespace test\example\Infrastructure\Controllers;
 
 use Xiag\Rql\Parser\Query;
 use PHPUnit\Framework\TestCase;
 
-class CreateOrderTest extends TestCase
+class CreateOrderControllerTest extends TestCase
 {
     protected $container;
 
