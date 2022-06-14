@@ -171,7 +171,7 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
     public function diff($another)
     {
         if ($another instanceof Collection) {
-            $another->getArrayCopy();
+            $another = $another->getArrayCopy();
         }
 
         $diff = array_diff($this->getArrayCopy(), $another);
@@ -189,6 +189,16 @@ class Collection extends \ArrayIterator implements ArrayableInterface, JsonableI
         foreach ($this as $key => $value) {
             $callback($value, $key);
         }
+    }
+
+    public function keys()
+    {
+        return array_keys($this->getArrayCopy());
+    }
+
+    public function values()
+    {
+        return array_values($this->getArrayCopy());
     }
 
     public function newCollection($values = []): self
