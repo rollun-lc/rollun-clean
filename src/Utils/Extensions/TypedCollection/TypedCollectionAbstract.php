@@ -124,6 +124,22 @@ abstract class TypedCollectionAbstract extends Collection
         return $result;
     }
 
+    public function groupByColumn($column)
+    {
+        $collection = new Collection();
+        foreach ($this->getArrayCopy() as $key => $item) {
+            $value = $this->getValueFromItem($item, $column);
+            $group = $collection[$value] ?? null;
+            if (!$group) {
+                $group = new static();
+                $collection[$value] = $group;
+            }
+            $group[] = $item;
+        }
+
+        return $collection;
+    }
+
     protected function makeCollection($collection = null): Collection
     {
         if (!$collection) {
