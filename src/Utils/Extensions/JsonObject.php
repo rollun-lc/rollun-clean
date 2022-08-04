@@ -2,22 +2,22 @@
 
 namespace Clean\Common\Utils\Extensions;
 
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
-
 class JsonObject extends ArrayObject
 {
     public function __construct(object|array $array = [], int $flags = 0, string $iteratorClass = "ArrayIterator")
     {
+        $this->checkArray($array);
+
+        parent::__construct($array, $flags, $iteratorClass);
+    }
+
+    private function checkArray(array $array)
+    {
         foreach ($array as $key => $value) {
             if (is_numeric($key)) {
-                /*$hash = md5($key);
-                $array[$hash] = $value;
-                unset($array[$key]);*/
                 throw new \Exception('Numeric index not supported');
             }
         }
-
-        parent::__construct($array, $flags, $iteratorClass);
     }
 
     public function __call($name, $arguments)
