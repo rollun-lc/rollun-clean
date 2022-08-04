@@ -6,7 +6,9 @@ class JsonObject extends ArrayObject
 {
     public function __construct(object|array $array = [], int $flags = 0, string $iteratorClass = "ArrayIterator")
     {
-        $this->checkArray($array);
+        if (is_array($array)) {
+            $this->checkArray($array);
+        }
 
         parent::__construct($array, $flags, $iteratorClass);
     }
