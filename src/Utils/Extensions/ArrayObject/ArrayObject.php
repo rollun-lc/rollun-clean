@@ -13,6 +13,25 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
         $this->unique = $unique;
     }
 
+    public function setUnique(bool $unique): void
+    {
+        if ($unique && !$this->unique) {
+            $this->renewUnique();
+        }
+
+        $this->unique = $unique;
+    }
+
+    protected function renewUnique()
+    {
+        $items = $this->items;
+        $this->items = [];
+        $this->unique = true;
+        foreach ($items as $item) {
+            $this->addItem($item);
+        }
+    }
+
     public function addItem(ArrayObjectItemInterface $item): void
     {
         if ($this->unique) {
