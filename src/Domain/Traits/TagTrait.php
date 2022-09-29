@@ -3,6 +3,7 @@
 namespace Clean\Common\Domain\Traits;
 
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObject;
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItem;
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItemInterface;
 
 trait TagTrait
@@ -13,16 +14,16 @@ trait TagTrait
     protected $tags;
 
     /**
-     * @param ArrayObjectItemInterface $tag
+     * @param string $tag
      * @return void
      */
-    public function addTag(ArrayObjectItemInterface $tag): void
+    public function addTag(string $tag): void
     {
         if ($this->tags === null) {
             $this->tags = new ArrayObject(true);
         }
 
-        $this->tags->addItem($tag);
+        $this->tags->addItem(new ArrayObjectItem($tag));
     }
 
     /**

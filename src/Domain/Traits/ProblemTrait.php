@@ -3,6 +3,7 @@
 namespace Clean\Common\Domain\Traits;
 
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObject;
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItem;
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItemInterface;
 
 trait ProblemTrait
@@ -16,13 +17,13 @@ trait ProblemTrait
      * @param ArrayObjectItemInterface $problem
      * @return void
      */
-    public function addProblem(ArrayObjectItemInterface $problem)
+    public function addProblem(mixed $problem)
     {
         if ($this->problems === null) {
             $this->problems = new ArrayObject(true);
         }
 
-        $this->problems->addItem($problem);
+        $this->problems->addItem(new ArrayObjectItem($problem));
     }
 
     /**
