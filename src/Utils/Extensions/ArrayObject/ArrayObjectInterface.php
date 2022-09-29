@@ -9,4 +9,6 @@ interface ArrayObjectInterface
     public function hasItem(mixed $item): bool;
 
     public function setUnique(bool $unique): void;
+
+    public function toArray(): array;
 }

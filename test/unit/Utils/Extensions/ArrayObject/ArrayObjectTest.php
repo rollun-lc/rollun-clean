@@ -115,4 +115,15 @@ class ArrayObjectTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    public function testToArray()
+    {
+        $instance = new ArrayObject(true);
+        $instance->addItem(new ArrayObjectItem('hello'));
+        $instance->addItem(new ArrayObjectItem('world'));
+
+        $result = $instance->toArray();
+
+        $this->assertEquals(['hello', 'world'], $result);
+    }
 }

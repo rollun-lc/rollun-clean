@@ -31,6 +31,11 @@ class ArrayObjectItem implements ArrayObjectItemInterface, \JsonSerializable, \S
         return md5((string) $this);
     }
 
+    public function value(): mixed
+    {
+        return $this->value;
+    }
+
     public function jsonSerialize()
     {
         return $this->value;

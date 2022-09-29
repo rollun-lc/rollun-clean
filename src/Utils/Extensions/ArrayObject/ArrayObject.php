@@ -90,4 +90,11 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
     {
         return count($this->items);
     }
+
+    public function toArray(): array
+    {
+        return array_map(function (ArrayObjectItem $item) {
+            return $item->value();
+        }, array_values($this->items));
+    }
 }
