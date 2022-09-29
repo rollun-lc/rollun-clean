@@ -9,7 +9,7 @@ class ArrayObjectFactoryTest extends TestCase
 {
     public function testFactory()
     {
-        $arrayObject = ArrayObjectFactory::makeArrayObject(['hello', 'world', 'hello'], true);
+        $arrayObject = ArrayObjectFactory::make(['hello', 'world', 'hello'], true);
 
         $this->assertCount(2, $arrayObject);
     }

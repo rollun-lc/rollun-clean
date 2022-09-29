@@ -4,7 +4,7 @@ namespace Clean\Common\Utils\Extensions\ArrayObject;
 
 class ArrayObjectFactory
 {
-    public static function makeArrayObject(array $values, bool $unique = false): ArrayObject
+    public static function make(array $values, bool $unique = false): ArrayObject
     {
         $arrayObject = new ArrayObject($unique);
         foreach ($values as $value) {
