@@ -8,7 +8,7 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
 
     protected $unique;
 
-    public function __construct(bool  $unique = false)
+    public function __construct(bool $unique = false)
     {
         $this->unique = $unique;
     }
