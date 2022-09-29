@@ -39,7 +39,15 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
         } else {
             $this->items[] = $item;
         }
+    }
 
+    public function hasItem(mixed $item): bool
+    {
+        if (!$item instanceof ArrayObjectItemInterface) {
+            $item = new ArrayObjectItem($item);
+        }
+
+        return array_key_exists($item->key(), $this->items);
     }
 
     public function getItems()

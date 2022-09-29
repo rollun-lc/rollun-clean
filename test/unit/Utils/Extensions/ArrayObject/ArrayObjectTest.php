@@ -98,4 +98,21 @@ class ArrayObjectTest extends TestCase
 
         $this->assertCount(1, $instance);
     }
+
+    public function testHasItem()
+    {
+        $instance = new ArrayObject(true);
+
+        $array = ['id' => 1, 'name' => 'hello'];
+
+        $object = new \stdClass();
+        $object->id = 1;
+        $object->name = 'hello';
+
+        $instance->addItem(new ArrayObjectItem($array));
+
+        $result = $instance->hasItem($object);
+
+        $this->assertTrue($result);
+    }
 }
