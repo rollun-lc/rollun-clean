@@ -39,6 +39,13 @@ trait TagTrait
         return false;
     }
 
+    public function deleteTag(string $tag)
+    {
+        if ($this->tags !== null) {
+            $this->tags->deleteItem($tag);
+        }
+    }
+
     /**
      * @return ArrayObject|null
      */

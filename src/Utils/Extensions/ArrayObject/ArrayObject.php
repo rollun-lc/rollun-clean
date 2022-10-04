@@ -50,6 +50,21 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
         return array_key_exists($item->key(), $this->items);
     }
 
+    public function deleteItem(mixed $item)
+    {
+        if (!$item instanceof ArrayObjectItemInterface) {
+            $item = new ArrayObjectItem($item);
+        }
+
+        if ($this->unique) {
+            unset($this->items[$item->key()]);
+        } else {
+            $this->items = array_filter($this->items, function (ArrayObjectItem $objectItem) use ($item) {
+                return $item != $objectItem;
+            });
+        }
+    }
+
     public function getItems()
     {
         return $this->items;

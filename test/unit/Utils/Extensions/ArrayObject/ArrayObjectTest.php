@@ -126,4 +126,30 @@ class ArrayObjectTest extends TestCase
 
         $this->assertEquals(['hello', 'world'], $result);
     }
+
+    public function testDeleteUnique()
+    {
+        $instance = new ArrayObject(true);
+        $instance->addItem(new ArrayObjectItem('hello'));
+        $instance->addItem(new ArrayObjectItem('world'));
+
+        $this->assertCount(2, $instance);
+
+        $instance->deleteItem('hello');
+
+        $this->assertCount(1, $instance);
+    }
+
+    public function testDeleteNotUnique()
+    {
+        $instance = new ArrayObject();
+        $instance->addItem(new ArrayObjectItem('hello'));
+        $instance->addItem(new ArrayObjectItem('world'));
+
+        $this->assertCount(2, $instance);
+
+        $instance->deleteItem('hello');
+
+        $this->assertCount(1, $instance);
+    }
 }
