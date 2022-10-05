@@ -2,7 +2,7 @@
 
 namespace Clean\Common\Utils\Extensions\Enum;
 
-abstract class Enum
+abstract class Enum implements \JsonSerializable
 {
     /**
      * @var mixed
@@ -13,6 +13,13 @@ abstract class Enum
      * @var bool
      */
     protected $nullable = false;
+
+    public function __construct($value = null)
+    {
+        if ($value) {
+            $this->setValue($value);
+        }
+    }
 
     /**
      * @param $value
@@ -43,7 +50,12 @@ abstract class Enum
 
     public function __toString()
     {
-        return (string) $this->value;
+        return (string) $this->getValue();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__toString();
     }
 
     abstract protected function getAcceptableValues(): array;
