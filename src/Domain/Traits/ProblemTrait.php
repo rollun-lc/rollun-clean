@@ -14,7 +14,7 @@ trait ProblemTrait
     protected $problems;
 
     /**
-     * @param ArrayObjectItemInterface $problem
+     * @param mixed $problem
      * @return void
      */
     public function addProblem($problem)
