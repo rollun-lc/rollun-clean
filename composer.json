@@ -9,7 +9,7 @@
             "email": "orlyk.rollun@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=8.0",
         "ext-json": "*"
@@ -30,8 +30,12 @@
         "mezzio/mezzio-fastroute": "^3.4",
         "mezzio/mezzio-helpers": "^5.8",
         "symfony/dotenv": "^6.0.3",
-        "articus/data-transfer": "dev-php-attribute-metadata",
-        "rollun-com/rollun-openapi": "dev-laminas"
+        "articus/data-transfer": "^0.5.2",
+        "rollun-com/rollun-openapi": "^10.0.0",
+        "guzzle/guzzle": "dev-php-8.0 as v3.9.0",
+        "symfony/serializer": "^6.0",
+        "symfony/property-info": "^v6.0.14",
+        "symfony/property-access": "^v6.0.11"
     },
     "suggest": {
         "rollun-com/rollun-datastore": "^7.0.0",
@@ -58,8 +62,8 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "/home/yurii/www/rollun/rollun-openapi"
+            "type": "github",
+            "url": "git@github.com:orlyk-rollun/guzzle3.git"
         }
     ]
 }
