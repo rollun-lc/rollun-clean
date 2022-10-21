@@ -2,6 +2,9 @@
 
 namespace Clean\Common\Application\Interfaces;
 
+/**
+ * @deprecated
+ */
 interface EntityMapperInterface
 {
     /**

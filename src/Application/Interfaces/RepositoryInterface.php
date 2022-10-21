@@ -2,8 +2,9 @@
 
 namespace Clean\Common\Application\Interfaces;
 
-use Clean\Common\Domain\Entities\EntityAbstract;
-
+/**
+ * @todo Зробити специфічні інтерфейси
+ */
 interface RepositoryInterface
 {
     public function getById($id);

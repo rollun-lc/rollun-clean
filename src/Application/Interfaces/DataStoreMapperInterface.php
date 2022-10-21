@@ -1,6 +1,6 @@
 <?php
 
-namespace Clean\Common\Infrastructure\Mappers;
+namespace Clean\Common\Application\Interfaces;
 
 interface DataStoreMapperInterface
 {

@@ -2,13 +2,12 @@
 
 namespace Clean\Common\Infrastructure\Repositories;
 
-use Clean\Common\Application\Interfaces\FromArrayInterface;
 use Clean\Common\Application\Interfaces\MapperInterface;
 use Clean\Common\Application\Interfaces\RepositoryInterface;
 use Clean\Common\Utils\Extensions\Collection;
 use Clean\Common\Utils\Helpers\Str;
 
-abstract class RepositoryAbstract implements RepositoryInterface, FromArrayInterface
+abstract class RepositoryAbstract implements RepositoryInterface
 {
     protected $mapper;
 
@@ -76,10 +75,5 @@ abstract class RepositoryAbstract implements RepositoryInterface, FromArrayInter
         }
 
         return $model;
-    }
-
-    public function createFromArray($data)
-    {
-        return $this->createEntity($data);
     }
 }
