@@ -3,9 +3,11 @@
 namespace Clean\Common\Infrastructure\Services\SimpleMapper;
 
 use Clean\Common\Application\Interfaces\EntityMapperInterface;
-use Clean\Common\Domain\Interfaces\ArrayableInterface;
 use Clean\Common\Utils\Extensions\Collection;
 
+/**
+ * @deprecated
+ */
 class SimpleMapper implements EntityMapperInterface
 {
     /**
