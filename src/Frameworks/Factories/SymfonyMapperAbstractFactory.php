@@ -37,6 +37,8 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
 
     public const KEY_LOADER_FILE = 'loaderFile';
 
+    public const KEY_NAME_CONVERTER = 'nameConverter';
+
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config')[self::KEY][$requestedName] ?? null;
@@ -121,9 +123,10 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
         ];*/
 
         $classMetadataFactory = new ClassMetadataFactory($loader);
+        $nameConverter = isset($config[self::KEY_NAME_CONVERTER]) ? new $config[self::KEY_NAME_CONVERTER]() : null;
         $normalizer = new ObjectNormalizer(
             $classMetadataFactory,
-            new CamelCaseToSnakeCaseNameConverter(),
+            $nameConverter,
             null,
             new ReflectionExtractor(),
             null,
