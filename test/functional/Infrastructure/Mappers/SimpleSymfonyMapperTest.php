@@ -5,6 +5,7 @@ namespace functional\Infrastructure\Mappers;
 use Clean\Common\Application\Interfaces\MapperInterface;
 use Clean\Common\Frameworks\Factories\SymfonyMapperAbstractFactory;
 use Clean\Common\Infrastructure\Mappers\SimpleSymfonyMapper;
+use Clean\Common\Utils\Extensions\DateTime;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -150,6 +151,7 @@ class SimpleSymfonyMapperTest extends TestCase
             'name' => 'Hello',
             'last_name' => 'World',
             'price' => 1.1,
+            'datetime' => '2022-02-02 02:02:02'
         ];
     }
 
@@ -160,6 +162,7 @@ class SimpleSymfonyMapperTest extends TestCase
             public $name;
             public $lastName;
             public $price;
+            public $datetime;
         };
         foreach ($this->makeArray() as $key => $value) {
             $property = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
@@ -176,6 +179,7 @@ class SimpleSymfonyMapperTest extends TestCase
             protected $name;
             protected $lastName;
             protected $price;
+            protected $datetime;
             public function setId(int $id)
             {
                 $this->id = $id;
@@ -192,6 +196,10 @@ class SimpleSymfonyMapperTest extends TestCase
             {
                 $this->lastName = $lastName;
             }
+            public function setDatetime(\DateTimeInterface $dateTime)
+            {
+                $this->datetime = $dateTime;
+            }
             public function __toString()
             {
                 return $this->name;
@@ -201,6 +209,9 @@ class SimpleSymfonyMapperTest extends TestCase
         foreach ($this->makeArray() as $key => $value) {
             $property = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
             $method = 'set' . $property;
+            if ($property === 'datetime') {
+                $value = new DateTime($value);
+            }
             $object->{$method}($value);
         }
 

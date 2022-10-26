@@ -2,7 +2,9 @@
 
 namespace Clean\Common\Utils\Extensions\ArrayObject;
 
-class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable, \Countable
+use Clean\Common\Domain\Interfaces\JsonableInterface;
+
+class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable, \Countable, JsonableInterface, \Stringable
 {
     protected $items;
 
@@ -111,5 +113,15 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
         return array_map(function (ArrayObjectItem $item) {
             return $item->value();
         }, array_values($this->items));
+    }
+
+    public function toJson(): string
+    {
+        return json_encode($this);
+    }
+
+    public function __toString(): string
+    {
+        return $this->toJson();
     }
 }

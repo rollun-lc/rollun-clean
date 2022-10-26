@@ -1,6 +1,6 @@
 <?php
 
-namespace functional\Infrastructure\Mappers;
+namespace functional\Frameworks\Factories;
 
 use Clean\Common\Frameworks\Factories\DataStoreMapperAbstractFactory;
 use Clean\Common\Infrastructure\Mappers\SimpleDataStoreMapper;
