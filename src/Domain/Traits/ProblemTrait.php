@@ -50,7 +50,7 @@ trait ProblemTrait
     /**
      * @param ArrayObject|null $problems
      */
-    public function setTags(?ArrayObject $problems): void
+    public function setProblems(?ArrayObject $problems): void
     {
         $this->problems = $problems;
     }
