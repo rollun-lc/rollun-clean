@@ -14,8 +14,9 @@ class DataStoreMapperAbstractFactoryTest extends TestCase
         global $container;
 
         $config = $container->get('config');
-        $config[DataStoreMapperAbstractFactory::KEY]['SimpleMapper'] = [
+        $config[DataStoreMapperAbstractFactory::KEY]['SimpleDataStoreMapper'] = [
             DataStoreMapperAbstractFactory::KEY_CLASS => SimpleDataStoreMapper::class,
+            DataStoreMapperAbstractFactory::KEY_MAPPER => 'DataStoreSymfonyMapper',
             DataStoreMapperAbstractFactory::KEY_ENTITY_CLASS => \stdClass::class,
         ];
 
@@ -23,7 +24,7 @@ class DataStoreMapperAbstractFactoryTest extends TestCase
         $manager->setService('config', $config);
         $manager->configure($config['dependencies']);
 
-        $instance = $manager->get('SimpleMapper');
+        $instance = $manager->get('SimpleDataStoreMapper');
 
         $this->assertInstanceOf(SimpleDataStoreMapper::class, $instance);
     }

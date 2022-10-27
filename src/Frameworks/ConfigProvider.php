@@ -9,6 +9,7 @@ use Clean\Common\Infrastructure\Mappers\SimpleDataStoreMapper;
 use Clean\Common\Infrastructure\Mappers\SimpleSymfonyMapper;
 use Clean\Common\Infrastructure\Services\SimpleMapper\SimpleMapper;
 use rollun\utils\Factory\AbstractServiceAbstractFactory;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
 /**
  * @todo Возможно конфиги фреймворка не нужны в этом пакете
@@ -27,6 +28,11 @@ class ConfigProvider
             SymfonyMapperAbstractFactory::KEY => [
                 SimpleSymfonyMapper::class => [
                     SymfonyMapperAbstractFactory::KEY_CLASS => SimpleSymfonyMapper::class,
+                    SymfonyMapperAbstractFactory::KEY_DEPENDENCIES => []
+                ],
+                'DataStoreSymfonyMapper' => [
+                    SymfonyMapperAbstractFactory::KEY_CLASS => SimpleSymfonyMapper::class,
+                    SymfonyMapperAbstractFactory::KEY_NAME_CONVERTER => CamelCaseToSnakeCaseNameConverter::class,
                     SymfonyMapperAbstractFactory::KEY_DEPENDENCIES => []
                 ]
             ],
