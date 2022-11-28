@@ -9,6 +9,9 @@ use Clean\Common\Utils\Extensions\DateTime;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Test\OpenAPI\V1\DTO\Inner;
+use Test\OpenAPI\V1\DTO\Response;
+use Test\OpenAPI\V1\DTO\Test;
 
 class SimpleSymfonyMapperTest extends TestCase
 {
@@ -46,13 +49,16 @@ class SimpleSymfonyMapperTest extends TestCase
     {
         $dto = $this->makeDto();
 
-        $mapper = $this->getMapper([
-            SymfonyMapperAbstractFactory::class => [
-                SimpleSymfonyMapper::class => [
-                    SymfonyMapperAbstractFactory::KEY_NAME_CONVERTER => CamelCaseToSnakeCaseNameConverter::class,
+        $mapper = $this->getMapper(
+            SimpleSymfonyMapper::class,
+            [
+                SymfonyMapperAbstractFactory::class => [
+                    SimpleSymfonyMapper::class => [
+                        SymfonyMapperAbstractFactory::KEY_NAME_CONVERTER => CamelCaseToSnakeCaseNameConverter::class,
+                    ]
                 ]
             ]
-        ]);
+        );
 
         $result = $mapper->mapToArray($dto);
 
@@ -124,12 +130,98 @@ class SimpleSymfonyMapperTest extends TestCase
         $this->assertObjectHasAttribute('lastName', $result);
     }
 
+    public function testObjectsWithoutSetter()
+    {
+        $mapper = $this->getMapper();
+
+        $array = [
+            'id' => 1,
+            'name' => 'Hello',
+            'something' => 'anything'
+        ];
+
+        $entity = new class() extends \stdClass {
+            public $id;
+            public $name;
+        };
+
+        $result = $mapper->map($array, get_class($entity));
+
+        $this->assertIsObject($result);
+        $this->assertObjectNotHasAttribute('something', $result);
+    }
+
+    /**
+     * TODO
+     *
+     * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function testObjectsWithMagicSetter()
+    {
+        $mapper = $this->getMapper();
+
+        $array = [
+            'id' => 1,
+            'name' => 'Hello',
+            'something' => 'anything'
+        ];
+
+        $entity = new class() extends \stdClass {
+            private $id;
+            private $name;
+            public function __set(string $name, $value): void
+            {
+                if (!property_exists($this, $name)) {
+                    throw new \Exception('Unknown property ' . $name);
+                }
+
+                $this->{$name} = $value;
+            }
+        };
+
+        $this->expectErrorMessage('Unknown property something');
+
+        $result = $mapper->map($array, get_class($entity));
+
+        $this->assertObjectNotHasAttribute('something', $result);
+    }
+
+    public function testMapIgnoringMagicSetter()
+    {
+        $mapper = $this->getMapper('OpenApiSimpleSymfonyMapper');
+
+        $array = [
+            'id' => 1,
+            'name' => 'Hello',
+            'something' => 'anything'
+        ];
+
+        $entity = new class() extends \stdClass {
+            private $id;
+            private $name;
+            public function __set(string $name, $value): void
+            {
+                if (!property_exists($this, $name)) {
+                    throw new \Exception('Unknown property ' . $name);
+                }
+
+                $this->{$name} = $value;
+            }
+        };
+
+        $result = $mapper->map($array, get_class($entity));
+
+        $this->assertObjectNotHasAttribute('something', $result);
+    }
+
     /**
      * @return MapperInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function getMapper($config = [])
+    protected function getMapper($mapper = SimpleSymfonyMapper::class, $config = [])
     {
         global $container;
 
@@ -141,7 +233,7 @@ class SimpleSymfonyMapperTest extends TestCase
         $serviceManager->setService('config', $config);
         $serviceManager->configure($config['dependencies']);
 
-        return $serviceManager->get(SimpleSymfonyMapper::class);
+        return $serviceManager->get($mapper);
     }
 
     protected function makeArray()

@@ -39,6 +39,8 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
 
     public const KEY_NAME_CONVERTER = 'nameConverter';
 
+    public const KEY_WITH_MAGIC = 'withMagic';
+
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config')[self::KEY][$requestedName] ?? null;
@@ -79,6 +81,8 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
         if (!isset($dependencies[self::KEY_SERIALIZER])) {
             $dependencies[self::KEY_SERIALIZER] = $this->createSerializer($config);
         }
+
+        $dependencies[self::KEY_WITH_MAGIC] = $config[self::KEY_WITH_MAGIC] ?? true;
 
         return $reflectionClass->newInstanceArgs($dependencies);
     }
@@ -122,6 +126,18 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
             ]
         ];*/
 
+        $context = [
+            ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            /*ObjectNormalizer::CALLBACKS => [
+                'created_at' => function($value) {
+                    return new DateTime($value);
+                },
+                'updated_at' => function($value) {
+                    return new DateTime($value);
+                }
+            ]*/
+        ];
+
         $classMetadataFactory = new ClassMetadataFactory($loader);
         $nameConverter = isset($config[self::KEY_NAME_CONVERTER]) ? new $config[self::KEY_NAME_CONVERTER]() : null;
         $normalizer = new ObjectNormalizer(
@@ -131,17 +147,7 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
             new ReflectionExtractor(),
             null,
             null,
-            [
-                ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
-                /*ObjectNormalizer::CALLBACKS => [
-                    'created_at' => function($value) {
-                        return new DateTime($value);
-                    },
-                    'updated_at' => function($value) {
-                        return new DateTime($value);
-                    }
-                ]*/
-            ]
+            $context
         );
 
         return new Serializer([new DateTimeNormalizer(), $normalizer]);

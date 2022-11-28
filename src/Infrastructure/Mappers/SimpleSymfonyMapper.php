@@ -3,15 +3,19 @@
 namespace Clean\Common\Infrastructure\Mappers;
 
 use Clean\Common\Application\Interfaces\MapperInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class SimpleSymfonyMapper implements MapperInterface
 {
     protected $serializer;
 
-    public function __construct(Serializer $serializer)
+    protected $withMagic;
+
+    public function __construct(Serializer $serializer, ?bool $withMagic = true)
     {
         $this->serializer = $serializer;
+        $this->withMagic = (bool) $withMagic;
     }
 
     public function map(mixed $data, string $type = null): mixed
@@ -36,6 +40,20 @@ class SimpleSymfonyMapper implements MapperInterface
 
     public function mapFromArray(array $data, string $type): object
     {
-        return $this->serializer->denormalize($data, $type);
+        $context = [];
+        if (!$this->withMagic) {
+            $context[AbstractNormalizer::IGNORED_ATTRIBUTES] = $this->getIgnoredAttributes($data, $type);
+        }
+        return $this->serializer->denormalize($data, $type, null, $context);
+    }
+
+    protected function getIgnoredAttributes(array $data, string $type)
+    {
+        $reflectionClass = new \ReflectionClass($type);
+        $properties = array_map(function (\ReflectionProperty $property) {
+            return $property->getName();
+        }, $reflectionClass->getProperties());
+
+        return array_diff(array_keys($data), $properties);
     }
 }

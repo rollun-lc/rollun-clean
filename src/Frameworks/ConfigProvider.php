@@ -30,6 +30,11 @@ class ConfigProvider
                     SymfonyMapperAbstractFactory::KEY_CLASS => SimpleSymfonyMapper::class,
                     SymfonyMapperAbstractFactory::KEY_DEPENDENCIES => []
                 ],
+                'SimpleSymfonyMapperIgnoringMagicSetter' => [
+                    SymfonyMapperAbstractFactory::KEY_CLASS => SimpleSymfonyMapper::class,
+                    SymfonyMapperAbstractFactory::KEY_WITH_MAGIC => false,
+                    SymfonyMapperAbstractFactory::KEY_DEPENDENCIES => []
+                ],
                 'DataStoreSymfonyMapper' => [
                     SymfonyMapperAbstractFactory::KEY_CLASS => SimpleSymfonyMapper::class,
                     SymfonyMapperAbstractFactory::KEY_NAME_CONVERTER => CamelCaseToSnakeCaseNameConverter::class,
