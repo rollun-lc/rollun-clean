@@ -3,6 +3,7 @@
 namespace Clean\Common\Frameworks\Factories;
 
 use Clean\Common\Application\Interfaces\MapperInterface;
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectNormalizer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
@@ -150,6 +151,6 @@ class SymfonyMapperAbstractFactory implements AbstractFactoryInterface
             $context
         );
 
-        return new Serializer([new DateTimeNormalizer(), $normalizer]);
+        return new Serializer([new DateTimeNormalizer(), new ArrayObjectNormalizer(), $normalizer]);
     }
 }

@@ -5,6 +5,8 @@ namespace functional\Infrastructure\Mappers;
 use Clean\Common\Application\Interfaces\MapperInterface;
 use Clean\Common\Frameworks\Factories\SymfonyMapperAbstractFactory;
 use Clean\Common\Infrastructure\Mappers\SimpleSymfonyMapper;
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObject;
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItem;
 use Clean\Common\Utils\Extensions\DateTime;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase;
@@ -190,7 +192,7 @@ class SimpleSymfonyMapperTest extends TestCase
 
     public function testMapIgnoringMagicSetter()
     {
-        $mapper = $this->getMapper('OpenApiSimpleSymfonyMapper');
+        $mapper = $this->getMapper('SimpleSymfonyMapperIgnoringMagicSetter');
 
         $array = [
             'id' => 1,
@@ -214,6 +216,53 @@ class SimpleSymfonyMapperTest extends TestCase
         $result = $mapper->map($array, get_class($entity));
 
         $this->assertObjectNotHasAttribute('something', $result);
+    }
+
+    public function testMapArrayObject()
+    {
+        $object = new class() extends \stdClass {
+            public $property;
+        };
+        $object->property = new ArrayObject();
+        $object->property->addItem(new ArrayObjectItem('hello'));
+        $object->property->addItem(new ArrayObjectItem('world'));
+
+        $mapper = $this->getMapper();
+
+        $result =  $mapper->mapToArray($object);
+
+        $this->assertEquals(['property' => ['hello', 'world']], $result);
+    }
+
+    public function testMapArrayObjectWithComplexTypes()
+    {
+        $object = new class() extends \stdClass {
+            public $property;
+        };
+
+        $object->property = new ArrayObject();
+        $item = new \stdClass();
+        $item->id = 1;
+        $object->property->addItem(new ArrayObjectItem($item));
+        $item = new \stdClass();
+        $item->id = 2;
+        $object->property->addItem(new ArrayObjectItem($item));
+
+        $mapper = $this->getMapper();
+
+        $result =  $mapper->mapToArray($object);
+
+        $expected = [
+            'property' => [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'id' => 2
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result);
     }
 
     /**
