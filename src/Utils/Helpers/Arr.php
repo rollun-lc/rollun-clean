@@ -2,6 +2,9 @@
 
 namespace Clean\Common\Utils\Helpers;
 
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObject;
+use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItem;
+
 class Arr
 {
     public static function mergeRecursive($array1, $array2)
@@ -21,5 +24,15 @@ class Arr
         }
 
         return $merged;
+    }
+
+    public static function toArrayObject(array $items, bool $unique = true)
+    {
+        $instance = new ArrayObject($unique);
+        foreach ($items as $item) {
+            $instance->addItem(new ArrayObjectItem($item));
+        }
+
+        return $instance;
     }
 }
