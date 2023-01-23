@@ -2,9 +2,10 @@
 
 namespace Clean\Common\Utils\Extensions\ArrayObject;
 
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ArrayObjectNormalizer implements NormalizerInterface
+class ArrayObjectNormalizer implements NormalizerInterface, DenormalizerInterface
 {
     protected const FORMAT_ARRAY = 'array';
 
@@ -30,5 +31,21 @@ class ArrayObjectNormalizer implements NormalizerInterface
     public function supportsNormalization(mixed $data, string $format = null)
     {
         return $data instanceof ArrayObject;
+    }
+
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    {
+        // TODO check unique true
+        $object = new ArrayObject(true);
+        foreach ($data as $value) {
+            $object->addItem(new ArrayObjectItem($value));
+        }
+
+        return $object;
+    }
+
+    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    {
+        return is_array($data) && is_a($type, ArrayObject::class, true);
     }
 }
