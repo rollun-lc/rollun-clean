@@ -8,12 +8,12 @@ use Clean\Common\Infrastructure\Mappers\SimpleSymfonyMapper;
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObject;
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItem;
 use Clean\Common\Utils\Extensions\DateTime;
+use test\functional\Infrastructure\TestClasses\Inner;
+use test\functional\Infrastructure\TestClasses\Outer;
+use test\functional\Infrastructure\TestClasses\OuterDto;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
-use Test\OpenAPI\V1\DTO\Inner;
-use Test\OpenAPI\V1\DTO\Response;
-use Test\OpenAPI\V1\DTO\Test;
 
 class SimpleSymfonyMapperTest extends TestCase
 {
@@ -223,7 +223,7 @@ class SimpleSymfonyMapperTest extends TestCase
         $object = new class() extends \stdClass {
             public $property;
         };
-        $object->property = new ArrayObject();
+        $object->property = new ArrayObject(true);
         $object->property->addItem(new ArrayObjectItem('hello'));
         $object->property->addItem(new ArrayObjectItem('world'));
 
@@ -263,6 +263,72 @@ class SimpleSymfonyMapperTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $result);
+    }
+
+    public function testMapWithoutData()
+    {
+        $data = [
+            'id' => 1
+        ];
+
+        $class = new class() extends \stdClass {
+            public int $id;
+            public string $name;
+        };
+
+        $mapper = $this->getMapper();
+
+        $result = $mapper->mapFromArray($data, get_class($class));
+
+        $reflectionProperty = new \ReflectionProperty($result, 'name');
+
+        $this->assertFalse($reflectionProperty->isInitialized($result));
+    }
+
+    public function testMapWithoutInnerData()
+    {
+        $data = [
+            'id' => 1,
+            'innerDto' => [
+                'id' => 2
+            ]
+        ];
+
+        $mapper = $this->getMapper();
+
+        $result = $mapper->mapFromArray($data, OuterDto::class);
+
+        $reflectionProperty = new \ReflectionProperty($result->innerDto, 'name');
+
+        $this->assertFalse($reflectionProperty->isInitialized($result->innerDto));
+    }
+
+    public function testToObjectWithParameter()
+    {
+        $entity = new Outer();
+        $entity->setId(1);
+        $inner = new Inner();
+        $inner->setId(2);
+        $inner->setName('hello');
+        $entity->setInner($inner);
+
+        $array = [
+            'id' => 1,
+            'inner' => [
+                'name' => 'world'
+            ]
+        ];
+
+        $mapper = $this->getMapper();
+
+        $result = $mapper->map($array, $entity);
+
+        $this->assertInstanceOf(Outer::class, $result);
+        $this->assertObjectHasAttribute('inner', $result);
+
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals(2, $result->getInner()->getId());
+        $this->assertEquals('world', $result->getInner()->getName());
     }
 
     /**

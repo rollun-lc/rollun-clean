@@ -3,6 +3,7 @@
 namespace Clean\Common\Infrastructure\Mappers;
 
 use Clean\Common\Application\Interfaces\MapperInterface;
+use Clean\Common\Utils\Helpers\Arr;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -18,7 +19,7 @@ class SimpleSymfonyMapper implements MapperInterface
         $this->withMagic = (bool) $withMagic;
     }
 
-    public function map(mixed $data, string $type = null): mixed
+    public function map(mixed $data, string|object $type = null): mixed
     {
         if (is_array($data)) {
             return $this->mapFromArray($data, $type);
@@ -38,12 +39,18 @@ class SimpleSymfonyMapper implements MapperInterface
         return $this->serializer->normalize($data);
     }
 
-    public function mapFromArray(array $data, string $type): object
+    public function mapFromArray(array $data, string|object $type): object
     {
         $context = [];
         if (!$this->withMagic) {
             $context[AbstractNormalizer::IGNORED_ATTRIBUTES] = $this->getIgnoredAttributes($data, $type);
         }
+        if (is_object($type)) {
+            $array = $this->mapToArray($type);
+            $data = Arr::mergeRecursive($array, $data);
+            $type = get_class($type);
+        }
+
         return $this->serializer->denormalize($data, $type, null, $context);
     }
 
