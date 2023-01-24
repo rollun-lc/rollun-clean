@@ -124,4 +124,14 @@ class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable,
     {
         return $this->toJson();
     }
+
+    /**
+     * Aliace for toArray method
+     * @see self::toArray()
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return $this->toArray();
+    }
 }
