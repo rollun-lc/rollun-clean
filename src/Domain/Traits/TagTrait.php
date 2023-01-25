@@ -13,7 +13,7 @@ trait TagTrait
     /**
      * @var ArrayObject|null
      */
-    protected $tags;
+    protected ?ArrayObject $tags = null;
 
     protected function enclose(string $tag)
     {
@@ -26,21 +26,25 @@ trait TagTrait
      * @param string $tag
      * @return void
      */
-    public function addTag(string $tag): void
+    public function addTagItem(ArrayObjectItem|string $tag): void
     {
         $tag = $this->enclose($tag);
         if ($this->tags === null) {
             $this->tags = new ArrayObject(true);
         }
+        
+        if (is_string($tag)) {
+            $tag = new ArrayObjectItem($tag);
+        }
 
-        $this->tags->addItem(new ArrayObjectItem($tag));
+        $this->tags->addItem($tag);
     }
 
     /**
      * @param $tag
      * @return bool
      */
-    public function hasTag($tag): bool
+    public function hasTagItem($tag): bool
     {
         $tag = $this->enclose($tag);
         if (isset($this->tags)) {
@@ -50,7 +54,7 @@ trait TagTrait
         return false;
     }
 
-    public function deleteTag(string $tag)
+    public function deleteTagItem(string $tag)
     {
         $tag = $this->enclose($tag);
         if ($this->tags !== null) {

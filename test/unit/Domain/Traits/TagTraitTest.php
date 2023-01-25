@@ -13,7 +13,7 @@ class TagTraitTest extends TestCase
             use TagTrait;
         };
 
-        $instance->addTag('hello');
+        $instance->addTagItem('hello');
 
         $property = new \ReflectionProperty($instance, 'tags');
         $property->setAccessible(true);
@@ -33,17 +33,17 @@ class TagTraitTest extends TestCase
             use TagTrait;
         };
 
-        $instance->addTag('#hello#');
+        $instance->addTagItem('#hello#');
 
-        $result = $instance->hasTag('hello');
-
-        $this->assertTrue($result);
-
-        $result = $instance->hasTag('#hello#');
+        $result = $instance->hasTagItem('hello');
 
         $this->assertTrue($result);
 
-        $result = $instance->hasTag('world');
+        $result = $instance->hasTagItem('#hello#');
+
+        $this->assertTrue($result);
+
+        $result = $instance->hasTagItem('world');
 
         $this->assertFalse($result);
     }
@@ -54,9 +54,9 @@ class TagTraitTest extends TestCase
             use TagTrait;
         };
 
-        $instance->addTag('#hello#');
+        $instance->addTagItem('#hello#');
 
-        $instance->deleteTag('hello');
+        $instance->deleteTagItem('hello');
 
         $property = new \ReflectionProperty($instance, 'tags');
         $property->setAccessible(true);

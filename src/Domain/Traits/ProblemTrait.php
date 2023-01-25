@@ -17,20 +17,24 @@ trait ProblemTrait
      * @param ArrayObjectItemInterface $problem
      * @return void
      */
-    public function addProblem(mixed $problem)
+    public function addProblemItem(mixed $problem)
     {
         if ($this->problems === null) {
             $this->problems = new ArrayObject(true);
         }
 
-        $this->problems->addItem(new ArrayObjectItem($problem));
+        if (!$problem instanceof ArrayObjectItem) {
+            $problem = new ArrayObjectItem($problem);
+        }
+
+        $this->problems->addItem($problem);
     }
 
     /**
      * @param $problem
      * @return bool
      */
-    public function hasProblem($problem): bool
+    public function hasProblemItem($problem): bool
     {
         if (isset($this->problems)) {
             return $this->problems->hasItem($problem);
