@@ -35,4 +35,13 @@ class Arr
 
         return $instance;
     }
+
+    public static function isAssociativeArray($array)
+    {
+        // Used in Laravel. It doesn't work with array like [0 => 1, 2 = 2]
+        /*$keys = array_keys($array);
+        return array_keys($keys) !== $keys;*/
+
+        return count(array_filter(array_keys($array), 'is_string')) > 0;
+    }
 }

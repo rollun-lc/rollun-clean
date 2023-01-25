@@ -7,4 +7,6 @@ class InnerDto
     public int $id;
 
     public string $name;
+
+    public array $items;
 }

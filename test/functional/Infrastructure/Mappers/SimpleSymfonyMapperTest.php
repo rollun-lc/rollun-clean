@@ -9,6 +9,7 @@ use Clean\Common\Utils\Extensions\ArrayObject\ArrayObject;
 use Clean\Common\Utils\Extensions\ArrayObject\ArrayObjectItem;
 use Clean\Common\Utils\Extensions\DateTime;
 use test\functional\Infrastructure\TestClasses\Inner;
+use test\functional\Infrastructure\TestClasses\InnerDto;
 use test\functional\Infrastructure\TestClasses\Outer;
 use test\functional\Infrastructure\TestClasses\OuterDto;
 use Laminas\ServiceManager\ServiceManager;
@@ -329,6 +330,77 @@ class SimpleSymfonyMapperTest extends TestCase
         $this->assertEquals(1, $result->getId());
         $this->assertEquals(2, $result->getInner()->getId());
         $this->assertEquals('world', $result->getInner()->getName());
+    }
+
+    public function testToObjectWithArrayParameter()
+    {
+        $outer = new OuterDto();
+        $outer->id = 1;
+        $inner = new InnerDto();
+        $inner->id = 2;
+        $inner->items = [
+            'hello',
+            'world',
+        ];
+        $outer->innerDto = $inner;
+
+        $array = [
+            'id' => 1,
+            'innerDto' => [
+                'id' => 2,
+                'items' => [
+                    'hello'
+                ]
+            ]
+        ];
+
+        $mapper = $this->getMapper();
+
+        $result = $mapper->mapFromArray($array, $outer);
+
+        $this->assertEquals(['hello'], $result->innerDto->items);
+    }
+
+    public function testNullableFields()
+    {
+        $object = new class() extends \stdClass
+        {
+            public int $id;
+
+            public ?string $something;
+        };
+
+        $data = ['id' => 1];
+
+        $mapper = $this->getMapper();
+
+        $result = $mapper->map($data, get_class($object));
+
+        $reflection = new \ReflectionProperty($result, 'something');
+
+        $this->assertFalse($reflection->isInitialized($result));
+    }
+
+    public function testMapArrayItems()
+    {
+        $object = new class() extends \stdClass
+        {
+            public int $id;
+
+            public array $items;
+        };
+        $object->items = ['one', 'two'];
+
+        $data = [
+            'id' => 1,
+            'items' => ['one'],
+        ];
+
+        $mapper = $this->getMapper();
+
+        $result = $mapper->map($data, get_class($object));
+
+        $this->assertEquals(['one'], $result->items);
     }
 
     /**

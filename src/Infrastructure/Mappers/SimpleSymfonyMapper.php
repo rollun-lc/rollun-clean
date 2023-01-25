@@ -47,7 +47,8 @@ class SimpleSymfonyMapper implements MapperInterface
         }
         if (is_object($type)) {
             $array = $this->mapToArray($type);
-            $data = Arr::mergeRecursive($array, $data);
+            // TODO
+            $data = $this->mergeArrays($array, $data);
             $type = get_class($type);
         }
 
@@ -62,5 +63,35 @@ class SimpleSymfonyMapper implements MapperInterface
         }, $reflectionClass->getProperties());
 
         return array_diff(array_keys($data), $properties);
+    }
+
+    /**
+     * @todo Temp decision
+     * Проблема в тому, що індексовані масиви, котрі є простим полем, а не вложеним об'єктом,
+     * при рекурсивному об'єданні не заміняються, а додаються.
+     * Наприклад, якщо оригінальне значення ['a' => [1, 2]], а друге значення ['a' => [3]],
+     * то в результаті отримуємо ['a' => [1, 2, 3], а цього не потрібно робити при мапінгу -
+     * значення повинне замінитись на ['a' => [3].
+     * Потрібно або знайти інше рішення, або оптимізувати даний метод
+     *
+     * @param array $array1
+     * @param array $array2
+     * @return mixed
+     */
+    protected function mergeArrays(array $array1, array $array2)
+    {
+        $result = Arr::mergeRecursive($array1, $array2);
+
+        foreach ($result as $key => $value) {
+            if (is_array($value)) {
+                if (!Arr::isAssociativeArray($value)) {
+                    $result[$key] = $array2[$key];
+                } else {
+                    $result[$key] = $this->mergeArrays($value, $array2[$key]);
+                }
+            }
+        }
+
+        return $result;
     }
 }
