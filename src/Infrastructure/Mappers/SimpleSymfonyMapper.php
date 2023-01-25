@@ -83,7 +83,7 @@ class SimpleSymfonyMapper implements MapperInterface
         $result = Arr::mergeRecursive($array1, $array2);
 
         foreach ($result as $key => $value) {
-            if (is_array($value)) {
+            if (is_array($value) && isset($array2[$key])) {
                 if (!Arr::isAssociativeArray($value)) {
                     $result[$key] = $array2[$key];
                 } else {
