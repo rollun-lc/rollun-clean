@@ -4,6 +4,7 @@ namespace Clean\Common\Utils\Extensions\ArrayObject;
 
 class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable, \Countable
 {
+    /** @var ArrayObjectItemInterface[] $items */
     protected $items = [];
 
     protected $unique;
