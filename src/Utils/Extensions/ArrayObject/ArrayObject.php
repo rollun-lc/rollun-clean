@@ -6,7 +6,8 @@ use Clean\Common\Domain\Interfaces\JsonableInterface;
 
 class ArrayObject implements ArrayObjectInterface, \Iterator, \JsonSerializable, \Countable, JsonableInterface, \Stringable
 {
-    protected $items;
+    /** @var ArrayObjectItemInterface[] $items */
+    protected $items = [];
 
     protected $unique;
 
