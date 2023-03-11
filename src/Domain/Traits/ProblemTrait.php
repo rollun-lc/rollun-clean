@@ -48,6 +48,7 @@ trait ProblemTrait
             $arrayObjectProblemItem = new ArrayObjectItem($problemItem);
             $newProblems->addItem($arrayObjectProblemItem);
         }
+        $newProblems->addItem($problem);
         $this->setProblems($problems);
     }
 
