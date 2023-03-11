@@ -12,6 +12,7 @@ trait ProblemTrait
      * @var ArrayObject|null
      */
     protected $problems;
+    protected $defaultMaxProblemsPerObject = 10;
 
     /**
      * @param ArrayObjectItemInterface $problem
@@ -27,7 +28,29 @@ trait ProblemTrait
             $problem = new ArrayObjectItem($problem);
         }
 
-        $this->problems->addItem($problem);
+        $problems = $this->getProblems();
+        $problemsCount = $problems->count();
+        $maxProblemsPerObject = getenv('MAX_PROBLEMS_PER_OBJECT') ?? $this->defaultMaxProblemsPerObject;
+
+        if ($problemsCount < $maxProblemsPerObject) {
+            $this->problems->addItem($problem);
+            return;
+        }
+
+        $problemsArray = $problems->toArray();
+        $newProblems = new ArrayObject(true);
+
+        $deleteRowsCount = $problemsCount - $maxProblemsPerObject;
+        for ($i = 0 ; $i < $deleteRowsCount ; $i++) {
+            array_shift($problemsArray);
+        }
+        foreach($problemsArray as $problemItem) {
+            $arrayObjectProblemItem = new ArrayObjectItem($problemItem);
+            $newProblems->addItem($arrayObjectProblemItem);
+        }
+        
+        $newProblems->addItem($problem);
+        $this->setProblems($problems);
     }
 
     /**
