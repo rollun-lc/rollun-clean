@@ -30,8 +30,8 @@ trait ProblemTrait
 
         $problems = $this->getProblems();
         $problemsCount = $problems->count();
-
         $maxProblemsPerObject = getenv('MAX_PROBLEMS_PER_OBJECT') ?? $this->defaultMaxProblemsPerObject;
+
         if ($problemsCount < $maxProblemsPerObject) {
             $this->problems->addItem($problem);
             return;
@@ -48,6 +48,7 @@ trait ProblemTrait
             $arrayObjectProblemItem = new ArrayObjectItem($problemItem);
             $newProblems->addItem($arrayObjectProblemItem);
         }
+        
         $newProblems->addItem($problem);
         $this->setProblems($problems);
     }
