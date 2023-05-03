@@ -12,7 +12,7 @@ trait ProblemTrait
      * @var ArrayObject|null
      */
     protected $problems;
-    protected $defaultMaxProblemsPerObject = 10;
+    protected $defaultMaxProblemsPerObject = 3;
 
     /**
      * @param ArrayObjectItemInterface $problem
@@ -28,19 +28,25 @@ trait ProblemTrait
             $problem = new ArrayObjectItem($problem);
         }
 
+        $this->clampProblems(getenv('MAX_PROBLEMS_PER_OBJECT') ?: $this->defaultMaxProblemsPerObject);
+
+        $problems = $this->getProblems();
+        $problems->addItem($problem);
+        $this->setProblems($problems);
+    }
+
+    public function clampProblems(int $maxProblemsSize) {
+        if ($this->problems === null) {
+            $this->problems = new ArrayObject(true);
+        }
+
         $problems = $this->getProblems();
         $problemsCount = $problems->count();
-        $maxProblemsPerObject = getenv('MAX_PROBLEMS_PER_OBJECT') ?? $this->defaultMaxProblemsPerObject;
-
-        if ($problemsCount < $maxProblemsPerObject) {
-            $this->problems->addItem($problem);
-            return;
-        }
 
         $problemsArray = $problems->toArray();
         $newProblems = new ArrayObject(true);
 
-        $deleteRowsCount = $problemsCount - $maxProblemsPerObject;
+        $deleteRowsCount = $problemsCount - $maxProblemsSize;
         for ($i = 0 ; $i < $deleteRowsCount ; $i++) {
             array_shift($problemsArray);
         }
@@ -48,9 +54,8 @@ trait ProblemTrait
             $arrayObjectProblemItem = new ArrayObjectItem($problemItem);
             $newProblems->addItem($arrayObjectProblemItem);
         }
-        
-        $newProblems->addItem($problem);
-        $this->setProblems($problems);
+
+        $this->setProblems($newProblems);
     }
 
     /**
